@@ -22,19 +22,19 @@
 }
 
 .message-bubble--user {
-  background-color: #0078d4;
-  color: white;
+  background-color: #E4CFFF;
+  color: #202020;
   border-bottom-right-radius: 4px;
 }
 
 .message-bubble--ai {
-  background-color: #e9e9eb;
-  color: #202020;
+  background-color: #754EA0;
+  color: #FFFFFF;
   border-bottom-left-radius: 4px;
 }
 
 .message-bubble p {
-    margin: 0;
+  margin: 0;
 }
 
 .message-timestamp {
