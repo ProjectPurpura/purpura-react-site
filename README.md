@@ -40,7 +40,7 @@ Para clonar e executar esta aplicação localmente, siga os passos abaixo.
 
 2.  **Clonagem do Repositório:**
     ```bash
-    git clone [https://github.com/seu-usuario/purpura-react-site.git](https://github.com/seu-usuario/purpura-react-site.git)
+    git clone [https://github.com/PurPuraAmbiental/purpura-react-site.git](https://github.com/PurPuraAmbiental/purpura-react-site.git)
     ```
 
 3.  **Instalação das Dependências:**
