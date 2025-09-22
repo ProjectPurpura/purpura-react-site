@@ -1,6 +1,6 @@
-# 💬 Chat Púrpura - Interface para a IA Nara (V0.1.0)
+# 💬 Chat Purpura - Interface para a IA Nara (V0.1.0)
 
-Uma interface de chat moderna desenvolvida para ser o cliente oficial da **Nara**, a assistente de IA do aplicativo Púrpura. Este projeto oferece uma experiência de usuário fluida para que os usuários possam tirar suas dúvidas sobre as funcionalidades do Púrpura de forma interativa e intuitiva.
+Uma interface de chat moderna desenvolvida para ser o cliente oficial da **Nara**, a assistente de IA do aplicativo Purpura. Este projeto oferece uma experiência de usuário fluida para que os usuários possam tirar suas dúvidas sobre as funcionalidades do Purpura de forma interativa e intuitiva.
 
 ## ✨ Principais Funcionalidades
 
