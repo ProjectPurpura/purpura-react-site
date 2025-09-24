@@ -1,8 +1,8 @@
+// src/components/ChatMessage.tsx
 import React from 'react';
 import { Message } from '../store/chatStore';
 import { format } from 'date-fns';
 import ReactMarkdown from 'react-markdown';
-
 import './ChatMessage.css';
 
 interface ChatMessageProps {
@@ -18,14 +18,13 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
     ? 'message-bubble message-bubble--user'
     : 'message-bubble message-bubble--ai';
 
-
   return (
     <div className={containerClass}>
       <div className={bubbleClass}>
-        <ReactMarkdown>{message.text}</ReactMarkdown>
+        <ReactMarkdown>{message.corpo}</ReactMarkdown>
       </div>
       <span className="message-timestamp">
-        {format(message.timestamp, 'HH:mm')}
+        {format(new Date(message.timestamp), 'HH:mm')}
       </span>
     </div>
   );

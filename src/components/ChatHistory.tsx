@@ -1,29 +1,80 @@
-import React, { useRef, useEffect } from 'react';
-import { useChatStore } from '../store/chatStore';
+// src/components/ChatHistory.tsx
+import React, { useRef, useLayoutEffect } from 'react';
+import { useChatStore, Message } from '../store/chatStore';
 import ChatMessage from './ChatMessage';
+import DateSeparator from './DateSeparator';
 import './ChatHistory.css';
+import { isSameDay, isToday, isYesterday, format, getYear } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
-const ChatHistory: React.FC = () => {
-  const messages = useChatStore((state) => state.messages);
+interface ChatHistoryProps {
+  conversationId: string;
+  currentUserId: string;
+}
+
+const emptyMessages: Message[] = [];
+
+const formatDateSeparator = (timestamp: number) => {
+  const date = new Date(timestamp);
+  const today = new Date();
+  if (isToday(date)) return 'Hoje';
+  if (isYesterday(date)) return 'Ontem';
+  if (getYear(date) === getYear(today)) {
+    return format(date, "d 'de' MMMM", { locale: ptBR });
+  }
+  return format(date, "d 'de' MMMM 'de' yyyy", { locale: ptBR });
+};
+
+const ChatHistory: React.FC<ChatHistoryProps> = ({ conversationId, currentUserId }) => {
+  const messages = useChatStore(
+    (state) => state.conversations[conversationId]?.messages || emptyMessages
+  );
   
-  const endOfMessagesRef = useRef<HTMLDivElement>(null);
+  const sortedMessages = [...messages].sort((a, b) => a.timestamp - b.timestamp);
+  
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  
+  useLayoutEffect(() => {
+    const node = chatContainerRef.current;
+    if (node) {
+      const isScrolledToBottom = node.scrollHeight - node.scrollTop - node.clientHeight < 100;
 
-  useEffect(() => {
-    endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+      const previousMessagesCount = parseInt(node.dataset.messagesCount || '0');
+      const isInitialLoad = previousMessagesCount === 0 && sortedMessages.length > 0;
+
+      if (isInitialLoad || isScrolledToBottom) {
+        node.scrollTop = node.scrollHeight;
+      }
+
+      node.dataset.messagesCount = String(sortedMessages.length);
+    }
+  }, [sortedMessages]);
+
 
   return (
-    <div className="chat-history">
-      {messages.length === 0 ? (
+    <div className="chat-history" ref={chatContainerRef}>
+      {sortedMessages.length === 0 ? (
         <div className="empty-chat-message">
-          <h2>Olá, Pessoa!</h2>
-          <p>Faça uma pergunta para começar a nossa conversa.</p>
+          <p>Nenhuma mensagem ainda. Envie a primeira!</p>
         </div>
       ) : (
-        messages.map((msg) => <ChatMessage key={msg.id} message={msg} />)
+        sortedMessages.map((msg, index) => {
+          const previousMessage = sortedMessages[index - 1];
+          const showDateSeparator = !previousMessage || 
+            !isSameDay(new Date(msg.timestamp), new Date(previousMessage.timestamp));
+          const isUserMessage = msg.senderId === currentUserId;
+          const messageWithLayout = { ...msg, isUser: isUserMessage };
+
+          return (
+            <React.Fragment key={msg.messageId}>
+              {showDateSeparator && (
+                <DateSeparator date={formatDateSeparator(msg.timestamp)} />
+              )}
+              <ChatMessage message={messageWithLayout} />
+            </React.Fragment>
+          );
+        })
       )}
-      {}
-      <div ref={endOfMessagesRef} />
     </div>
   );
 };

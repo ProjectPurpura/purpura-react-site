@@ -1,17 +1,18 @@
+// src/components/ChatInput.tsx
 import React, { useState } from 'react';
 import { useChatStore } from '../store/chatStore';
 import { SendHorizontal } from 'lucide-react';
 import './ChatInput.css';
 
-const sendMessageToGemini = async (text: string): Promise<string> => {
-  console.log(`Enviando para a IA: "${text}"`);
-  await new Promise(resolve => setTimeout(resolve, 1000)); 
-  return `Resposta muito braba da sua IA favoritaaa`;
+interface ChatInputProps {
+  conversationId: string;
+  onSendMessage: (text: string) => void;
+  currentUserId: string;
 }
 
-const ChatInput: React.FC = () => {
+const ChatInput: React.FC<ChatInputProps> = ({ conversationId, onSendMessage, currentUserId }) => {
   const [text, setText] = useState('');
-  const addMessage = useChatStore((state) => state.addMessage);
+  const addMessage = useChatStore((state) => state.addMessageToConversation);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -19,23 +20,18 @@ const ChatInput: React.FC = () => {
     if (!trimmedText) return;
 
     const userMessage = {
-      id: `user-${Date.now()}`,
-      text: trimmedText,
-      timestamp: new Date(),
+      messageId: `user-${Date.now()}`,
+      senderId: currentUserId,
+      corpo: trimmedText,
+      timestamp: Date.now(),
+      read: true,
       isUser: true,
     };
-    addMessage(userMessage);
+    addMessage(conversationId, userMessage);
+    
+    onSendMessage(trimmedText);
+
     setText('');
-
-    const aiResponseText = await sendMessageToGemini(trimmedText);
-
-    const aiMessage = {
-      id: `ai-${Date.now()}`,
-      text: aiResponseText,
-      timestamp: new Date(),
-      isUser: false,
-    };
-    addMessage(aiMessage);
   };
 
   return (
@@ -44,7 +40,7 @@ const ChatInput: React.FC = () => {
         <input
           type="text"
           className="chat-input-field"
-          placeholder="Digite sua pergunta..."
+          placeholder="Digite sua mensagem..."
           value={text}
           onChange={(e) => setText(e.target.value)}
         />

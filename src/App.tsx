@@ -1,16 +1,19 @@
+// src/App.tsx
 import React from 'react';
-import Header from './components/Header';
-import ChatHistory from './components/ChatHistory';
-import ChatInput from './components/ChatInput';
-
+import { Routes, Route } from 'react-router-dom';
+import ChatListPage from './pages/ChatListPage';
+import ConversationPage from './pages/ConversationPage';
+import SupportPage from './pages/SupportPage';
 import './App.css';
 
 function App() {
   return (
     <div className="app-container">
-      <Header />
-      <ChatHistory />
-      <ChatInput />
+      <Routes>
+        <Route path="/" element={<ChatListPage />} />
+        <Route path="/chat/:conversationId" element={<ConversationPage />} />
+        <Route path="/suporte" element={<SupportPage />} />
+      </Routes>
     </div>
   );
 }
