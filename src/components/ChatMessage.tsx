@@ -12,11 +12,11 @@ interface ChatMessageProps {
 const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
   const containerClass = message.isUser
     ? 'chat-message-container chat-message-container--user'
-    : 'chat-message-container chat-message-container--ai';
+    : 'chat-message-container chat-message-container--other';
 
   const bubbleClass = message.isUser
     ? 'message-bubble message-bubble--user'
-    : 'message-bubble message-bubble--ai';
+    : 'message-bubble message-bubble--other';
 
   return (
     <div className={containerClass}>

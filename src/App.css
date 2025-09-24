@@ -1,15 +1,11 @@
+/* src/App.css */
+
 .app-container {
+  width: 100%;
+  height: 100vh;
+  margin: 0;
   display: flex;
   flex-direction: column;
-  height: 100vh;
   background-color: #f4f4f4;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-}
-
-.chat-window {
-  flex-grow: 1;
-  padding: 20px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
 }
