@@ -19,7 +19,7 @@
 }
 
 .message-bubble--user { background-color: #754ea0; color: #fff; border-bottom-right-radius: 4px; }
-.message-bubble--other { background-color: #e9e9eb; color: #202020; border-bottom-left-radius: 4px; }
+.message-bubble--other { background-color: #E4CFFF; color: #202020; border-bottom-left-radius: 4px; }
 
 .message-bubble p { margin: 0; }
 
