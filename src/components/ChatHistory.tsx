@@ -42,7 +42,9 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({ conversationId, currentUserId
       const isInitialLoad = previousMessagesCount === 0 && sortedMessages.length > 0;
 
       if (isInitialLoad || isScrolledToBottom) {
-        node.scrollTop = node.scrollHeight;
+        requestAnimationFrame(() => {
+          node.scrollTop = node.scrollHeight;
+        });
       }
 
       node.dataset.messagesCount = String(sortedMessages.length);
@@ -62,10 +64,6 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({ conversationId, currentUserId
             !isSameDay(new Date(msg.timestamp), new Date(previousMessage.timestamp));
           
           const isUserMessage = msg.senderId === currentUserId;
-          
-          // O ESPIÃO PARA DEBUG
-          console.log(`Msg: "${msg.corpo}", Sender: ${msg.senderId}, CurrentUser: ${currentUserId}, IsUser?: ${isUserMessage}`);
-          
           const messageWithLayout = { ...msg, isUser: isUserMessage };
 
           return (

@@ -2,7 +2,8 @@
 import React from 'react';
 import { useChatStore } from '../store/chatStore';
 import { CURRENT_USER_ID } from '../config';
-import { Trash2 } from 'lucide-react';
+import { Trash2, ArrowLeft } from 'lucide-react'; // Importa o ícone de seta
+import { useNavigate } from 'react-router-dom'; // Importa o hook de navegação
 import './Header.css';
 
 interface HeaderProps {
@@ -10,12 +11,13 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ conversationId }) => {
+  const navigate = useNavigate(); // Pega a função de navegação do React Router
+
   const conversation = useChatStore((state) => state.conversations[conversationId]);
   const empresas = useChatStore((state) => state.empresas);
 
   const isSupportChat = conversationId === 'suporte';
   let displayName = 'Chat';
-  
   let imageUrl = process.env.PUBLIC_URL + '/logo.svg';
   let imageAlt = 'Logo Purpura';
 
@@ -26,7 +28,6 @@ const Header: React.FC<HeaderProps> = ({ conversationId }) => {
     if (otherParticipantId && empresas[otherParticipantId]) {
       const empresa = empresas[otherParticipantId];
       displayName = empresa.nome;
-      
       if (empresa.urlFoto) {
         imageUrl = empresa.urlFoto;
         imageAlt = `Logo da ${empresa.nome}`;
@@ -40,19 +41,31 @@ const Header: React.FC<HeaderProps> = ({ conversationId }) => {
     }
   };
 
+  const handleBack = () => {
+    navigate('/');
+  };
+
   return (
     <header className="app-header">
-      <div className="header-title-container">
-        <img 
-          src={imageUrl} 
-          alt={imageAlt} 
-          className="app-logo"
-        />
-        <h1 className="app-title">{displayName}</h1>
+      <div className="header-left-section">
+        <button onClick={handleBack} className="back-button" title="Voltar para a lista">
+          <ArrowLeft size={24} />
+        </button>
+        <div className="header-title-container">
+          <img 
+            src={imageUrl} 
+            alt={imageAlt} 
+            className="app-logo"
+          />
+          <h1 className="app-title">{displayName}</h1>
+        </div>
       </div>
-      <button onClick={handleClearChat} className="clear-chat-button" title="Limpar conversa">
-        <Trash2 size={20} />
-      </button>
+      
+      <div className="header-right-section">
+        <button onClick={handleClearChat} className="clear-chat-button" title="Limpar conversa">
+          <Trash2 size={20} />
+        </button>
+      </div>
     </header>
   );
 };

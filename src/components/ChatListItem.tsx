@@ -25,17 +25,22 @@ const ChatListItem: React.FC<ChatListItemProps> = ({ conversation }) => {
   const linkTo = isSupportChat ? '/suporte' : `/chat/${conversation.chatId}`;
 
   return (
-    <Link to={linkTo} className="chat-list-item">
-      <div className="chat-item-icon">
-        {isSupportChat ? <Bot size={24} /> : <MessageSquare size={24} />}
+    <Link to={linkTo} className="chat-list-item" aria-label={`Abrir conversa: ${displayName}`}>
+      <div className="chat-item-icon" aria-hidden>
+        {isSupportChat ? <Bot size={18} /> : <MessageSquare size={18} />}
       </div>
       <div className="chat-item-details">
-        <h3 className="chat-item-name">{displayName}</h3>
-        {conversation.lastMessagePreview && <p className="chat-item-preview">{conversation.lastMessagePreview}</p>}
+        <h3 className="chat-item-name" title={displayName}>{displayName}</h3>
+        {conversation.lastMessagePreview && (
+          <p className="chat-item-preview" title={conversation.lastMessagePreview}>
+            {conversation.lastMessagePreview}
+          </p>
+        )}
       </div>
-      
       {conversation.unreadCount && conversation.unreadCount > 0 && (
-        <div className="unread-badge">{conversation.unreadCount}</div>
+        <div className="unread-badge" aria-label={`${conversation.unreadCount} não lidas`}>
+          {conversation.unreadCount}
+        </div>
       )}
     </Link>
   );
