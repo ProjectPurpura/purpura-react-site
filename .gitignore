@@ -4,9 +4,11 @@
 /node_modules
 /.pnp
 .pnp.js
+.env
 
 # testing
 /coverage
+hash_token.py
 
 # production
 /build

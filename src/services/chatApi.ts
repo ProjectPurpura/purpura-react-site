@@ -7,19 +7,16 @@ export const fetchConversations = async (userId: string): Promise<Conversation[]
   if (!API_BASE_URL) {
     throw new Error("URL da API não definida no .env");
   }
-
   try {
     const response = await fetch(`${API_BASE_URL}/chat/user/${userId}`);
     if (!response.ok) {
       throw new Error(`Erro ao buscar conversas: ${response.statusText}`);
     }
-    
     const dataFromServer: any[] = await response.json();
     const translatedData: Conversation[] = dataFromServer.map(chat => ({
       ...chat,
       chatId: chat.id 
     }));
-    
     return translatedData;
   } catch (error) {
     console.error("Falha ao buscar conversas:", error);
@@ -78,8 +75,7 @@ export const fetchConversationById = async (chatId: string): Promise<Conversatio
     const dataFromServer: any = await response.json();
     const translatedData: Conversation = { ...dataFromServer, chatId: dataFromServer.id };
     return translatedData;
-  } catch (error)
- {
+  } catch (error) {
     console.error(`Falha ao buscar detalhes do chat ${chatId}:`, error);
     return null;
   }

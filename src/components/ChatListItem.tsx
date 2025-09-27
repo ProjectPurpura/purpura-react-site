@@ -17,7 +17,7 @@ const ChatListItem: React.FC<ChatListItemProps> = ({ conversation }) => {
   const isSupportChat = conversation.chatId === 'suporte';
 
   if (isSupportChat) {
-    displayName = otherParticipantId || 'Nara';
+    displayName = otherParticipantId || 'PurpurIA';
   } else if (otherParticipantId && empresas[otherParticipantId]) {
     displayName = empresas[otherParticipantId].nome;
   }

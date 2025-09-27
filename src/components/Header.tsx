@@ -11,7 +11,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ conversationId }) => {
-  const navigate = useNavigate(); // Pega a função de navegação do React Router
+  const navigate = useNavigate();
 
   const conversation = useChatStore((state) => state.conversations[conversationId]);
   const empresas = useChatStore((state) => state.empresas);
