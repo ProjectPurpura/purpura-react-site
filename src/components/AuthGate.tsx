@@ -25,23 +25,7 @@ const AuthGate: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     );
   }
 
-  if (status === 'missing') {
-    return (
-      <div className="chat-list-page">
-        <header className="chat-list-header">
-          <h1>Purpura</h1>
-          <p>Autenticação necessária</p>
-        </header>
-        <main className="chat-list-container">
-          <div className="chat-list-loading">
-            Não foi possível autenticar o usuário: parâmetro “#login” ausente. Abra pelo app mobile que gera a URL com o userHash.
-          </div>
-        </main>
-      </div>
-    );
-  }
-
-  if (status === 'invalid') {
+  if (status === 'missing' || status === 'invalid') {
     return (
       <div className="chat-list-page">
         <header className="chat-list-header">
@@ -50,7 +34,7 @@ const AuthGate: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         </header>
         <main className="chat-list-container">
           <div className="chat-list-loading">
-            Não foi possível autenticar o usuário: userHash inválido ou expirado. Tente novamente pelo app mobile.
+            Não foi possível autenticar o usuário. Tente novamente pelo app mobile.
           </div>
         </main>
       </div>

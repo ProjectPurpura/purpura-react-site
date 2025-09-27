@@ -4,9 +4,25 @@ import { Client, IMessage, StompSubscription } from '@stomp/stompjs';
 import { useChatStore, Message } from '../store/chatStore';
 import { CURRENT_USER_ID } from '../config';
 
+type Incoming = {
+  id: string;
+  senderId: string;
+  content: string;
+  timestamp?: number;
+  read?: boolean;
+  chatId: string;
+};
+
+type TypingEvent = {
+  chatId: string;
+  userId: string;
+  typing: boolean;
+};
+
 export const useStompChat = (conversationId: string | undefined) => {
   const clientRef = useRef<Client | null>(null);
-  const subRef = useRef<StompSubscription | null>(null);
+  const subMsgRef = useRef<StompSubscription | null>(null);
+  const subTypingRef = useRef<StompSubscription | null>(null);
   const addMessage = useChatStore((state) => state.addMessageToConversation);
 
   useEffect(() => {
@@ -21,9 +37,8 @@ export const useStompChat = (conversationId: string | undefined) => {
     }
 
     if (clientRef.current?.active) {
-      try {
-        subRef.current?.unsubscribe();
-      } catch {}
+      try { subMsgRef.current?.unsubscribe(); } catch {}
+      try { subTypingRef.current?.unsubscribe(); } catch {}
       clientRef.current.deactivate();
       clientRef.current = null;
     }
@@ -31,25 +46,42 @@ export const useStompChat = (conversationId: string | undefined) => {
     const client = new Client({
       brokerURL,
       reconnectDelay: 5000,
-      debug: (str) => {
-
-      },
+      debug: () => {},
     });
 
     client.onConnect = () => {
-      try {
-        subRef.current?.unsubscribe();
-      } catch {}
+      try { subMsgRef.current?.unsubscribe(); } catch {}
+      try { subTypingRef.current?.unsubscribe(); } catch {}
 
-      subRef.current = client.subscribe(`/topic/chat.${conversationId}`, (message: IMessage) => {
+      subMsgRef.current = client.subscribe(`/topic/chat.${conversationId}`, (frame: IMessage) => {
         try {
-          const receivedMessage: Message = JSON.parse(message.body);
-          if (receivedMessage?.senderId !== CURRENT_USER_ID) {
+          const incoming: Incoming = JSON.parse(frame.body);
+          const receivedMessage: Message = {
+            messageId: incoming.id,
+            senderId: incoming.senderId,
+            corpo: incoming.content,
+            timestamp: incoming.timestamp ?? Date.now(),
+            read: !!incoming.read,
+            isUser: incoming.senderId === CURRENT_USER_ID,
+          };
+          if (receivedMessage.senderId !== CURRENT_USER_ID) {
             addMessage(conversationId, receivedMessage);
+          }
+          if (incoming.senderId) {
+            useChatStore.getState().setTyping(conversationId, incoming.senderId, false);
           }
         } catch (e) {
           console.error('Falha ao processar mensagem STOMP:', e);
         }
+      });
+
+      subTypingRef.current = client.subscribe(`/topic/chat.${conversationId}.typing`, (frame: IMessage) => {
+        try {
+          const evt: TypingEvent = JSON.parse(frame.body);
+          if (evt?.userId) {
+            useChatStore.getState().setTyping(evt.chatId, evt.userId, !!evt.typing);
+          }
+        } catch {}
       });
     };
 
@@ -62,14 +94,14 @@ export const useStompChat = (conversationId: string | undefined) => {
     clientRef.current = client;
 
     return () => {
-      try {
-        subRef.current?.unsubscribe();
-      } catch {}
+      try { subMsgRef.current?.unsubscribe(); } catch {}
+      try { subTypingRef.current?.unsubscribe(); } catch {}
       if (clientRef.current?.active) {
         clientRef.current.deactivate();
       }
       clientRef.current = null;
-      subRef.current = null;
+      subMsgRef.current = null;
+      subTypingRef.current = null;
     };
   }, [conversationId, addMessage]);
 
@@ -77,16 +109,37 @@ export const useStompChat = (conversationId: string | undefined) => {
     if (clientRef.current?.connected && conversationId && conversationId !== 'null') {
       const payload = {
         chatId: conversationId,
-        senderId: senderId,
+        senderId,
         content: text,
       };
       clientRef.current.publish({
         destination: '/app/chat',
         body: JSON.stringify(payload),
       });
+      typingStop();
     } else {
       console.error('Não foi possível enviar a mensagem. Cliente não conectado ou ID de conversa inválido.');
     }
+  };
+
+  const typingStart = () => {
+    if (!clientRef.current?.connected || !conversationId) return;
+    const evt: TypingEvent = { chatId: conversationId, userId: CURRENT_USER_ID, typing: true };
+    clientRef.current.publish({
+      destination: '/app/chat.typing',
+      body: JSON.stringify(evt),
+    });
+    useChatStore.getState().setTyping(conversationId, CURRENT_USER_ID, true);
+  };
+
+  const typingStop = () => {
+    if (!clientRef.current?.connected || !conversationId) return;
+    const evt: TypingEvent = { chatId: conversationId, userId: CURRENT_USER_ID, typing: false };
+    clientRef.current.publish({
+      destination: '/app/chat.typing',
+      body: JSON.stringify(evt),
+    });
+    useChatStore.getState().setTyping(conversationId, CURRENT_USER_ID, false);
   };
 
   const markAsRead = (messageIds: string[]) => {
@@ -99,5 +152,5 @@ export const useStompChat = (conversationId: string | undefined) => {
     });
   };
 
-  return { sendMessage, markAsRead };
+  return { sendMessage, markAsRead, typingStart, typingStop };
 };

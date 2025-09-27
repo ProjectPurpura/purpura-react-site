@@ -1,11 +1,13 @@
 // src/components/ChatHistory.tsx
-import React, { useRef, useLayoutEffect } from 'react';
+import React, { useRef, useLayoutEffect, useMemo } from 'react';
 import { useChatStore, Message } from '../store/chatStore';
 import ChatMessage from './ChatMessage';
 import DateSeparator from './DateSeparator';
+import TypingIndicator from './TypingIndicator';
 import './ChatHistory.css';
 import { isSameDay, isToday, isYesterday, format, getYear } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { CURRENT_USER_ID } from '../config';
 
 interface ChatHistoryProps {
   conversationId: string;
@@ -26,14 +28,16 @@ const formatDateSeparator = (timestamp: number) => {
 };
 
 const ChatHistory: React.FC<ChatHistoryProps> = ({ conversationId, currentUserId }) => {
-  const messages = useChatStore(
-    (state) => state.conversations[conversationId]?.messages || emptyMessages
+  const conversation = useChatStore((s) => s.conversations[conversationId]);
+  const messages = conversation?.messages || emptyMessages;
+
+  const sortedMessages = useMemo(
+    () => [...messages].sort((a, b) => a.timestamp - b.timestamp),
+    [messages]
   );
-  
-  const sortedMessages = [...messages].sort((a, b) => a.timestamp - b.timestamp);
-  
+
   const chatContainerRef = useRef<HTMLDivElement>(null);
-  
+
   useLayoutEffect(() => {
     const node = chatContainerRef.current;
     if (node) {
@@ -49,20 +53,43 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({ conversationId, currentUserId
 
       node.dataset.messagesCount = String(sortedMessages.length);
     }
-  }, [sortedMessages]);
+  }, [sortedMessages, conversation?.typing]);
+
+  const rendered = useMemo(() => {
+    const arr = [...sortedMessages] as Array<Message | { typing: true; timestamp: number }>;
+    const anyoneTyping = Object.values(conversation?.typing || {}).some(Boolean);
+    if (anyoneTyping) {
+      arr.push({ typing: true, timestamp: Date.now() } as any);
+    }
+    return arr;
+  }, [sortedMessages, conversation?.typing]);
 
   return (
     <div className="chat-history" ref={chatContainerRef}>
-      {sortedMessages.length === 0 ? (
+      {rendered.length === 0 ? (
         <div className="empty-chat-message">
           <p>Nenhuma mensagem ainda. Envie a primeira!</p>
         </div>
       ) : (
-        sortedMessages.map((msg, index) => {
-          const previousMessage = sortedMessages[index - 1];
-          const showDateSeparator = !previousMessage || 
-            !isSameDay(new Date(msg.timestamp), new Date(previousMessage.timestamp));
-          
+        rendered.map((msg: any, index: number) => {
+          const previousMessage = rendered[index - 1] as any;
+          const showDateSeparator =
+            !previousMessage ||
+            (!msg.typing &&
+              !isSameDay(new Date(msg.timestamp), new Date(previousMessage?.timestamp)));
+
+          if (msg.typing) {
+            return (
+              <React.Fragment key={`typing-${index}`}>
+                <div className="chat-message-container chat-message-container--other">
+                  <div className="message-bubble message-bubble--other">
+                    <TypingIndicator />
+                  </div>
+                </div>
+              </React.Fragment>
+            );
+          }
+
           const isUserMessage = msg.senderId === currentUserId;
           const messageWithLayout = { ...msg, isUser: isUserMessage };
 

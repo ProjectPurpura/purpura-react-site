@@ -20,6 +20,8 @@ const ChatListItem: React.FC<ChatListItemProps> = ({ conversation }) => {
     displayName = otherParticipantId || 'PurpurIA';
   } else if (otherParticipantId && empresas[otherParticipantId]) {
     displayName = empresas[otherParticipantId].nome;
+  } else if (otherParticipantId) {
+    displayName = otherParticipantId;
   }
 
   const linkTo = isSupportChat ? '/suporte' : `/chat/${conversation.chatId}`;
