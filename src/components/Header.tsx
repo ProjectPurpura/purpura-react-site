@@ -22,7 +22,7 @@ const Header: React.FC<HeaderProps> = ({ conversationId }) => {
   let imageAlt = 'Logo Purpura';
 
   if (isSupportChat) {
-    displayName = 'Nara';
+    displayName = 'PurpurIA';
   } else if (conversation) {
     const otherParticipantId = conversation.participants.find(p => p !== CURRENT_USER_ID);
     if (otherParticipantId && empresas[otherParticipantId]) {

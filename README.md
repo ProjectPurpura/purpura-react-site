@@ -1,87 +1,68 @@
-# 💬 Plataforma de Chat Purpura (V0.2.0)
+# 💬 Plataforma de Chat Purpura
 
-Uma plataforma de comunicação moderna e em tempo real, desenvolvida para ser o hub de mensagens do ecossistema **Purpura**. Este projeto oferece uma experiência de chat B2B fluida, permitindo que empresas se comuniquem de forma eficiente, além de integrar a **Nara**, a assistente de IA, para um suporte rápido e intuitivo.
+Uma plataforma de comunicação em tempo real para conectar empresas do ecossistema **Purpura**, com suporte da assistente de IA **PurpurIA** para um atendimento rápido e intuitivo.
 
-## ✨ Principais Funcionalidades
+## ✨ O que o site oferece
 
-A aplicação foi desenvolvida com foco em reatividade, comunicação em tempo real e boas práticas de desenvolvimento.
+- Conversas entre empresas: trocas diretas e privadas, organizadas por lista de conversas e páginas de chat.  
+- Mensagens instantâneas: envio e recebimento na hora, sem precisar recarregar a página.  
+- Indicador de digitação: mostra as “três bolinhas” enquanto alguém está escrevendo.  
+- Contagem de não lidas: cada conversa exibe quantas mensagens do outro participante ainda não foram lidas.  
+- Suporte com IA (PurpurIA): canal dedicado para dúvidas e orientação.  
+- Mensagens com formatação: suporte a textos com formatação simples (Markdown) para melhor leitura.  
 
-* **💬 Chat Multi-Empresas:** O coração da plataforma, permitindo conversas diretas e privadas entre diferentes empresas cadastradas no ecossistema Purpura.
-* **⚡ Comunicação em Tempo Real:** Utiliza **WebSockets** com o protocolo **STOMP** para uma troca de mensagens instantânea, garantindo que as conversas fluam sem atrasos.
-* **🤖 Integração com a IA Nara:** Inclui um chat de suporte dedicado com a Nara, a IA da Purpura, para responder a dúvidas e oferecer assistência.
-* **🌐 Roteamento de Páginas:** Arquitetura multi-página com **React Router**, com uma tela principal para a lista de chats e rotas dinâmicas para cada conversa individual.
-* **🧠 Gerenciamento de Estado com Zustand:** Utiliza Zustand para um gerenciamento de estado global leve e sem boilerplate, controlando as conversas, mensagens e detalhes de empresas de forma centralizada e eficiente.
-* **✍️ Respostas Formatadas com Markdown:** As mensagens (tanto de usuários quanto da IA) são renderizadas como Markdown, permitindo a exibição de textos formatados.
-* **🔒 Código Fortemente Tipado:** Desenvolvido inteiramente em **TypeScript**, o que garante maior segurança e previsibilidade na integração com as APIs.
-* **🎨 Ícones Modernos:** Integra a biblioteca **Lucide-React** para ícones SVG leves e consistentes.
+## 🛠️ Tecnologias usadas
 
-## 🛠️ Arquitetura e Tecnologias Utilizadas
+- React: base da interface, garantindo navegação simples e componentes reutilizáveis.  
+- TypeScript: aumenta a segurança do código e reduz erros.  
+- WebSockets com STOMP: mantém o chat em tempo real, com entrega imediata de mensagens.  
+- Zustand: guarda conversas, mensagens, empresas e o status de digitação de forma leve.  
+- React Router: organiza a navegação entre a lista de chats e cada conversa.  
+- date-fns e Lucide: padronizam datas e oferecem ícones modernos e leves.  
 
-A arquitetura do projeto segue o padrão de componentização do React, com uma separação clara entre a UI (componentes), a lógica de estado (store) e a comunicação com serviços (API).
+## ⚙️ Como funciona por trás
 
-* **Linguagem:** **TypeScript**
-* **Framework:** **React**
-* **Bibliotecas Principais:**
-    * **Zustand:** Para gerenciamento de estado global.
-    * **React Router DOM:** Para o roteamento de páginas.
-    * **@stomp/stompjs:** Para a comunicação via WebSocket com o protocolo STOMP.
-    * **React-Markdown:** Para renderização de mensagens formatadas.
-    * **date-fns:** Para formatação e manipulação de datas.
-    * **Lucide-React:** Para a biblioteca de ícones.
-* **Build Tool:** **Create React App (react-scripts)**
+- API REST: carrega conversas, mensagens e dados das empresas.  
+- Canal em tempo real: cada conversa tem um “tópico” próprio onde as mensagens são trocadas.  
+- Indicador de leitura: o site pode marcar mensagens como lidas quando a conversa é aberta.  
 
-## ⚙️ APIs Utilizadas
+## 🚀 Como executar
 
-O projeto se conecta a um back-end robusto que expõe duas interfaces principais:
+1) Pré-requisitos  
+- Node.js 18+  
+- NPM ou Yarn  
 
-1.  **API REST:** Responsável por:
-    * Listar as conversas de um usuário (`GET /chat/user/{id}`).
-    * Buscar o histórico de mensagens de um chat específico (`GET /chat/{chatId}/messages`).
-    * Obter os detalhes de uma empresa (`GET /empresa/{id}`).
-2.  **Servidor WebSocket (via STOMP):** Responsável pela troca de mensagens em tempo real, com um tópico dinâmico para cada conversa (`/topic/chat.{chatId}`).
+2) Clonar o projeto  
+```
+git clone https://github.com/PurPuraAmbiental/purpura-react-site.git
+cd purpura-react-site
+```
 
-## 🚀 Como Executar o Projeto
+3) Instalar dependências  
+```
+npm install
+# ou
+yarn install
+```
 
-Para clonar e executar esta aplicação localmente, siga os passos abaixo.
+4) Configurar o ambiente  
+Crie um arquivo .env a partir do exemplo:  
+```
+cp .env.example .env
+```
+Preencha as URLs da API e do servidor WebSocket.
 
-1.  **Pré-requisitos:**
-    * Node.js (versão 18 ou superior)
-    * NPM ou Yarn
+5) Rodar em desenvolvimento  
+```
+npm start
+# ou
+yarn start
+```
+Abra http://localhost:3000
 
-2.  **Clonagem do Repositório:**
-    ```bash
-    git clone https://github.com/PurPuraAmbiental/purpura-react-site.git
-    cd purpura-react-site
-    ```
+## 🌐 Build de produção
 
-3.  **Instalação das Dependências:**
-    ```bash
-    npm install
-    ```
-    ou
-    ```bash
-    yarn install
-    ```
-
-4.  **Configuração do Ambiente (Passo Crucial!)**
-    Na raiz do projeto, crie um arquivo chamado `.env` a partir do exemplo. Você pode fazer isso copiando o arquivo de exemplo:
-    ```bash
-    cp .env.example .env
-    ```
-    Em seguida, abra o arquivo `.env` e preencha as URLs corretas para a sua API e o servidor WebSocket.
-
-5.  **Execução em Modo de Desenvolvimento:**
-    ```bash
-    npm start
-    ```
-    ou
-    ```bash
-    yarn start
-    ```
-    O aplicativo será aberto automaticamente no seu navegador em `http://localhost:3000`.
-
-## 🌐 Deploy
-
-Para gerar uma versão de produção otimizada do projeto, execute o seguinte comando:
-```bash
+```
 npm run build
+```
+Gera os arquivos otimizados na pasta build para publicar em produção.

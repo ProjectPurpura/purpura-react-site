@@ -24,7 +24,7 @@ const ChatListPage: React.FC = () => {
     if (!arr.some(c => c.chatId === 'suporte')) {
       const supportChat: Conversation = {
         chatId: 'suporte',
-        participants: ['Nara', CURRENT_USER_ID],
+        participants: ['PurpurIA', CURRENT_USER_ID],
         messages: [],
         lastMessagePreview: 'Precisa de ajuda? Fale conosco!',
         lastUpdated: Date.now(),
