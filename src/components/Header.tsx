@@ -1,9 +1,9 @@
 // src/components/Header.tsx
 import React from 'react';
 import { useChatStore } from '../store/chatStore';
-import { CURRENT_USER_ID } from '../config';
-import { Trash2, ArrowLeft } from 'lucide-react'; // Importa o ícone de seta
-import { useNavigate } from 'react-router-dom'; // Importa o hook de navegação
+import { getSessionUser } from '../auth/authState';
+import { Trash2, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import './Header.css';
 
 interface HeaderProps {
@@ -12,7 +12,6 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ conversationId }) => {
   const navigate = useNavigate();
-
   const conversation = useChatStore((state) => state.conversations[conversationId]);
   const empresas = useChatStore((state) => state.empresas);
 
@@ -21,10 +20,13 @@ const Header: React.FC<HeaderProps> = ({ conversationId }) => {
   let imageUrl = process.env.PUBLIC_URL + '/logo.svg';
   let imageAlt = 'Logo Purpura';
 
+  const session: any = getSessionUser();
+  const myId = session?.cnpj || session?.userHash || '';
+
   if (isSupportChat) {
-    displayName = 'PurpurIA';
+    displayName = 'Nara';
   } else if (conversation) {
-    const otherParticipantId = conversation.participants.find(p => p !== CURRENT_USER_ID);
+    const otherParticipantId = conversation.participants.find(p => p !== myId);
     if (otherParticipantId && empresas[otherParticipantId]) {
       const empresa = empresas[otherParticipantId];
       displayName = empresa.nome;

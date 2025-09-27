@@ -1,9 +1,9 @@
 // src/components/ChatInput.tsx
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useChatStore } from '../store/chatStore';
 import { SendHorizontal } from 'lucide-react';
-import { useStompChat } from '../hooks/useStompChat';
 import './ChatInput.css';
+import { getSessionUser } from '../auth/authState';
 
 interface ChatInputProps {
   conversationId: string;
@@ -11,30 +11,25 @@ interface ChatInputProps {
   currentUserId: string;
 }
 
-const TYPING_DEBOUNCE_MS = 1200;
-
 const ChatInput: React.FC<ChatInputProps> = ({ conversationId, onSendMessage, currentUserId }) => {
   const [text, setText] = useState('');
   const addMessage = useChatStore((state) => state.addMessageToConversation);
-  const { typingStart, typingStop } = useStompChat(conversationId);
-  const lastTypedRef = useRef<number>(0);
-  const timerRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) window.clearTimeout(timerRef.current);
-      typingStop();
-    };
-  }, [typingStop]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const trimmedText = text.trim();
     if (!trimmedText) return;
 
+    const session: any = getSessionUser();
+    const senderId = currentUserId || session?.cnpj || session?.userHash || '';
+    if (!senderId) {
+      console.error('[SEND] missing senderId, session', session);
+      return;
+    }
+
     const userMessage = {
       messageId: `user-${Date.now()}`,
-      senderId: currentUserId,
+      senderId,
       corpo: trimmedText,
       timestamp: Date.now(),
       read: true,
@@ -45,22 +40,6 @@ const ChatInput: React.FC<ChatInputProps> = ({ conversationId, onSendMessage, cu
     onSendMessage(trimmedText);
 
     setText('');
-    typingStop();
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setText(e.target.value);
-    const now = Date.now();
-
-    if (now - lastTypedRef.current > 300) {
-      typingStart();
-      lastTypedRef.current = now;
-    }
-
-    if (timerRef.current) window.clearTimeout(timerRef.current);
-    timerRef.current = window.setTimeout(() => {
-      typingStop();
-    }, TYPING_DEBOUNCE_MS) as unknown as number;
   };
 
   return (
@@ -71,7 +50,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ conversationId, onSendMessage, cu
           className="chat-input-field"
           placeholder="Digite sua mensagem..."
           value={text}
-          onChange={handleChange}
+          onChange={(e) => setText(e.target.value)}
         />
         <button type="submit" className="send-button" title="Enviar mensagem">
           <SendHorizontal size={20} />

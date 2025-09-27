@@ -2,14 +2,18 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useChatStore, Conversation } from '../store/chatStore';
 import { fetchConversations, fetchEmpresaById } from '../services/chatApi';
-import { CURRENT_USER_ID } from '../config';
 import ChatListItem from '../components/ChatListItem';
 import './ChatListPage.css';
+import { getSessionUser } from '../auth/authState';
 
 const ChatListPage: React.FC = () => {
   const { conversations, setConversations, addEmpresaDetails } = useChatStore();
   const [isLoading, setIsLoading] = useState(true);
   const listRef = useRef<HTMLDivElement>(null);
+
+  const session: any = getSessionUser();
+  const myId = session?.cnpj || session?.userHash || '';
+  const myName = session?.nome || 'Minha Conta';
 
   useEffect(() => {
     const ro = new ResizeObserver(() => {
@@ -21,10 +25,10 @@ const ChatListPage: React.FC = () => {
 
   const conversationList = useMemo(() => {
     const arr = Object.values(conversations);
-    if (!arr.some(c => c.chatId === 'suporte')) {
+    if (myId && !arr.some(c => c.chatId === 'suporte')) {
       const supportChat: Conversation = {
         chatId: 'suporte',
-        participants: ['PurpurIA', CURRENT_USER_ID],
+        participants: ['Nara', myId],
         messages: [],
         lastMessagePreview: 'Precisa de ajuda? Fale conosco!',
         lastUpdated: Date.now(),
@@ -38,19 +42,19 @@ const ChatListPage: React.FC = () => {
       return (b.lastUpdated || 0) - (a.lastUpdated || 0);
     });
     return arr;
-  }, [conversations]);
+  }, [conversations, myId]);
 
   useEffect(() => {
     const load = async () => {
       setIsLoading(true);
-      const convos = await fetchConversations(CURRENT_USER_ID);
+      const convos = await fetchConversations(myId);
       setConversations(convos);
 
       const participantIds = new Set<string>();
       const currentEmpresas = useChatStore.getState().empresas;
       convos.forEach(convo => {
         convo.participants.forEach(id => {
-          if (id !== CURRENT_USER_ID && !currentEmpresas[id]) participantIds.add(id);
+          if (id !== myId && !currentEmpresas[id]) participantIds.add(id);
         });
       });
       for (const id of participantIds) {
@@ -59,16 +63,16 @@ const ChatListPage: React.FC = () => {
       }
       setIsLoading(false);
     };
-    load();
-  }, [setConversations, addEmpresaDetails]);
+    if (myId) load();
+  }, [setConversations, addEmpresaDetails, myId]);
 
   return (
-    <div className="chat-list-page">
+    <div className="chat-list-page" ref={listRef}>
       <header className="chat-list-header">
         <h1>Minhas Conversas</h1>
-        <p>Selecione uma conversa para continuar.</p>
+        <p>Logado como: {myName}</p>
       </header>
-      <main className="chat-list-container" ref={listRef}>
+      <main className="chat-list-container">
         {isLoading ? (
           <div className="chat-list-loading">Carregando conversas...</div>
         ) : (

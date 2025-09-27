@@ -1,43 +1,37 @@
 // src/pages/PathLoginPage.tsx
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import './ChatListPage.css';
-import { setSessionUser } from '../auth/authState';
+import { setSessionUser, setAuthStatus } from '../auth/authState';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const PathLoginPage: React.FC = () => {
-  const { loginHash } = useParams<{ loginHash: string }>();
+  const { token } = useParams<{ token: string }>();
   const navigate = useNavigate();
-  const [status, setStatus] = useState<'loading' | 'ok' | 'fail'>('loading');
+  const [status, setStatus] = useState<'idle' | 'ok' | 'error'>('idle');
 
   useEffect(() => {
     (async () => {
-      const token = decodeURIComponent((loginHash || '').replace(/\/+$/, '')).trim();
       if (!token) {
-        setStatus('fail');
+        setStatus('error');
         return;
       }
-      setSessionUser('', token);
-      setStatus('ok');
-      navigate('/', { replace: true });
+      try {
+        const base = process.env.REACT_APP_API_URL as string;
+        const res = await fetch(`${base}/empresa/hash/${encodeURIComponent(token)}`);
+        if (!res.ok) throw new Error('hash inválida');
+        const payload = await res.json();
+        setSessionUser(payload);
+        setAuthStatus('ok');
+        setStatus('ok');
+        navigate('/', { replace: true });
+      } catch {
+        setStatus('error');
+      }
     })();
-  }, [loginHash, navigate]);
+  }, [token, navigate]);
 
-  return (
-    <div className="chat-list-page">
-      <header className="chat-list-header">
-        <h1>Purpura</h1>
-        <p>Autenticando...</p>
-      </header>
-      <main className="chat-list-container">
-        {status === 'loading' && (
-          <div className="chat-list-loading">Processando hash de acesso...</div>
-        )}
-        {status === 'fail' && (
-          <div className="chat-list-loading">userHash inválido ou ausente.</div>
-        )}
-      </main>
-    </div>
-  );
+  if (status === 'idle') return <div>Autenticando...</div>;
+  if (status === 'error') return <div>Falha ao autenticar.</div>;
+  return null;
 };
 
 export default PathLoginPage;

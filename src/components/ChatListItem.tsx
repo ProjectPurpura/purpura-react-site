@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useChatStore, Conversation } from '../store/chatStore';
-import { CURRENT_USER_ID } from '../config';
+import { getSessionUser } from '../auth/authState';
 import { MessageSquare, Bot } from 'lucide-react';
 
 interface ChatListItemProps {
@@ -11,7 +11,9 @@ interface ChatListItemProps {
 
 const ChatListItem: React.FC<ChatListItemProps> = ({ conversation }) => {
   const empresas = useChatStore((state) => state.empresas);
-  const otherParticipantId = conversation.participants.find(p => p !== CURRENT_USER_ID);
+  const session: any = getSessionUser();
+  const myId = session?.cnpj || session?.userHash || '';
+  const otherParticipantId = conversation.participants.find(p => p !== myId);
   
   let displayName = 'Carregando...';
   const isSupportChat = conversation.chatId === 'suporte';

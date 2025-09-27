@@ -1,24 +1,19 @@
 // src/pages/ConversationPage.tsx
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import Header from '../components/Header'; 
+import { useParams, useNavigate } from 'react-router-dom';
+import Header from '../components/Header';
 import ChatHistory from '../components/ChatHistory';
 import ChatInput from '../components/ChatInput';
 import { useStompChat } from '../hooks/useStompChat';
-import { CURRENT_USER_ID } from '../config';
 import { fetchMessagesForChat, fetchConversationById, fetchEmpresaById } from '../services/chatApi';
 import { useChatStore } from '../store/chatStore';
+import { getSessionUser } from '../auth/authState';
 
 const ConversationPage: React.FC = () => {
   const { conversationId } = useParams<{ conversationId: string }>();
-  const { 
-    setMessagesForConversation,
-    addOrUpdateConversation,
-    addEmpresaDetails 
-  } = useChatStore();
-  
+  const navigate = useNavigate();
+  const { setMessagesForConversation, addOrUpdateConversation, addEmpresaDetails } = useChatStore();
   const [isLoading, setIsLoading] = useState(true);
-
   const { sendMessage } = useStompChat(conversationId);
 
   useEffect(() => {
@@ -41,42 +36,48 @@ const ConversationPage: React.FC = () => {
         }
       }
 
-      if (conversation) {
-        const otherParticipantId = conversation.participants.find(p => p !== CURRENT_USER_ID);
-        if (otherParticipantId && !empresas[otherParticipantId]) {
-          const empresaDetails = await fetchEmpresaById(otherParticipantId);
-          if (empresaDetails) {
-            addEmpresaDetails(empresaDetails);
-          }
-        }
+      if (!conversation) {
+        setIsLoading(false);
+        navigate('/', { replace: true });
+        return;
       }
-      
+
+      const session: any = getSessionUser();
+      const myId = session?.cnpj || session?.userHash || '';
+      const otherParticipantId = conversation.participants.find(p => p !== myId);
+      if (otherParticipantId && !empresas[otherParticipantId]) {
+        const empresaDetails = await fetchEmpresaById(otherParticipantId);
+        if (empresaDetails) addEmpresaDetails(empresaDetails);
+      }
+
       const messages = await fetchMessagesForChat(conversationId);
       setMessagesForConversation(conversationId, messages);
 
       setIsLoading(false);
     };
-    
+
     loadPageData();
-  }, [conversationId, setMessagesForConversation, addOrUpdateConversation, addEmpresaDetails]);
+  }, [conversationId, setMessagesForConversation, addOrUpdateConversation, addEmpresaDetails, navigate]);
+
+  const session: any = getSessionUser();
+  const myId = session?.cnpj || session?.userHash || '';
 
   const handleSendMessage = (text: string) => {
-    sendMessage(text, CURRENT_USER_ID);
+    if (!myId) {
+      console.error('Usuário não autenticado');
+      return;
+    }
+    sendMessage(text, myId);
   };
-  
-  if (!conversationId || conversationId === 'null') {
-    return <div>ID de conversa inválido!</div>;
-  }
 
-  if (isLoading) {
-    return <div>Carregando dados da conversa...</div>;
-  }
+  if (!conversationId || conversationId === 'null') return <div>ID de conversa inválido!</div>;
+  if (isLoading) return <div>Carregando dados da conversa...</div>;
 
   return (
     <>
       <Header conversationId={conversationId} />
-      <ChatHistory conversationId={conversationId} currentUserId={CURRENT_USER_ID} />
-      <ChatInput conversationId={conversationId} onSendMessage={handleSendMessage} currentUserId={CURRENT_USER_ID} />
+      <ChatHistory conversationId={conversationId} currentUserId={myId} />
+      <ChatInput conversationId={conversationId} onSendMessage={handleSendMessage} currentUserId={myId} />
     </>
   );
 };

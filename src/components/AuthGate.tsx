@@ -1,42 +1,58 @@
 // src/components/AuthGate.tsx
 import React, { useEffect, useState } from 'react';
-import { getAuthStatus, onAuthChange } from '../auth/authState';
+import { getAuthStatus } from '../auth/authState';
 import '../pages/ChatListPage.css';
 
 const AuthGate: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [status, setStatus] = useState(getAuthStatus());
 
   useEffect(() => {
-    const unsubscribe = onAuthChange(() => setStatus(getAuthStatus()));
-    return () => { unsubscribe(); };
+    const id = window.setInterval(() => {
+      setStatus(getAuthStatus());
+    }, 200);
+    return () => window.clearInterval(id);
   }, []);
 
-  if (status === 'unknown') {
+  if (status === 'idle' || status === 'loading') {
     return (
       <div className="chat-list-page">
         <header className="chat-list-header">
-          <h1>Purpura</h1>
-          <p>Inicializando...</p>
+          <h1>Carregando...</h1>
+          <p>Preparando sua sessão</p>
         </header>
-        <main className="chat-list-container">
-          <div className="chat-list-loading">Verificando autenticação...</div>
-        </main>
       </div>
     );
   }
 
-  if (status === 'missing' || status === 'invalid') {
+  if (status === 'missing') {
     return (
       <div className="chat-list-page">
         <header className="chat-list-header">
-          <h1>Purpura</h1>
-          <p>Falha de autenticação</p>
+          <h1>Link inválido</h1>
+          <p>Abra novamente pelo app mobile.</p>
         </header>
-        <main className="chat-list-container">
-          <div className="chat-list-loading">
-            Não foi possível autenticar o usuário. Tente novamente pelo app mobile.
-          </div>
-        </main>
+      </div>
+    );
+  }
+
+  if (status === 'invalid') {
+    return (
+      <div className="chat-list-page">
+        <header className="chat-list-header">
+          <h1>Hash inválida</h1>
+          <p>Verifique o link de acesso</p>
+        </header>
+      </div>
+    );
+  }
+
+  if (status === 'error') {
+    return (
+      <div className="chat-list-page">
+        <header className="chat-list-header">
+          <h1>Erro ao autenticar</h1>
+          <p>Tente novamente mais tarde</p>
+        </header>
       </div>
     );
   }
