@@ -7,6 +7,7 @@ import SupportPage from './pages/SupportPage';
 import PathLoginPage from './pages/PathLoginPage';
 import AuthGate from './components/AuthGate';
 import { useHashLoginBootstrap } from './AppBootstrap';
+import AreaRestrita from './pages/AreaRestrita';
 import './App.css';
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
             <Route path="/" element={<ChatListPage />} />
             <Route path="/chat/:conversationId" element={<ConversationPage />} />
             <Route path="/suporte" element={<SupportPage />} />
+            <Route path="/arearestrita" element={<AreaRestrita />} />
           </Routes>
         </AuthGate>
       </div>
