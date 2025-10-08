@@ -24,7 +24,7 @@ const Header: React.FC<HeaderProps> = ({ conversationId }) => {
   const myId = session?.cnpj || session?.userHash || '';
 
   if (isSupportChat) {
-    displayName = 'Nara';
+    displayName = 'PurpurIA';
   } else if (conversation) {
     const otherParticipantId = conversation.participants.find(p => p !== myId);
     if (otherParticipantId && empresas[otherParticipantId]) {

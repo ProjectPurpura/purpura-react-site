@@ -11,7 +11,7 @@
 hash_token.py
 
 # production
-/build
+# /build
 
 # misc
 .DS_Store

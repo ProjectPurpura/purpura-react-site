@@ -28,11 +28,11 @@ function App() {
       <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
         <AuthGate>
           <Routes>
+            <Route path="/arearestrita" element={<AreaRestrita />} />
             <Route path="/:loginHash/" element={<PathLoginPage />} />
             <Route path="/" element={<ChatListPage />} />
             <Route path="/chat/:conversationId" element={<ConversationPage />} />
             <Route path="/suporte" element={<SupportPage />} />
-            <Route path="/arearestrita" element={<AreaRestrita />} />
           </Routes>
         </AuthGate>
       </div>
