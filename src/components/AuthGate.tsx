@@ -1,10 +1,12 @@
 // src/components/AuthGate.tsx
 import React, { useEffect, useState } from 'react';
 import { getAuthStatus } from '../auth/authState';
+import { useLocation } from 'react-router-dom';
 import '../pages/ChatListPage.css';
 
 const AuthGate: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [status, setStatus] = useState(getAuthStatus());
+  const location = useLocation();
 
   useEffect(() => {
     const id = window.setInterval(() => {
@@ -12,6 +14,10 @@ const AuthGate: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     }, 200);
     return () => window.clearInterval(id);
   }, []);
+
+  if (location.pathname === '/arearestrita') {
+    return <>{children}</>;
+  }
 
   if (status === 'idle' || status === 'loading') {
     return (
