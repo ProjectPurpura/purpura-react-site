@@ -23,6 +23,7 @@ export function setAuthStatus(s: AuthStatus) {
 }
 
 export function setSessionUser(user: SessionUser | null) {
+  localStorage.removeItem(KEY);
   try {
     if (user) localStorage.setItem(KEY, JSON.stringify(user));
     else localStorage.removeItem(KEY);
