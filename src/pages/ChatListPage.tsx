@@ -70,7 +70,7 @@ const ChatListPage: React.FC = () => {
     <div className="chat-list-page" ref={listRef}>
       <header className="chat-list-header">
         <h1>Minhas Conversas</h1>
-        <p>Logado como: {myName} - {'cnpj' in session ? session.cnpj : 'N/A'}</p>
+        <p>Logado como: {myName}</p>
       </header>
       <main className="chat-list-container">
         {isLoading ? (
