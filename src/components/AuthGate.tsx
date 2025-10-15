@@ -1,6 +1,6 @@
 // src/components/AuthGate.tsx
 import React, { useEffect, useState } from 'react';
-import { getAuthStatus } from '../auth/authState';
+import { getAuthStatus, getSessionUser } from '../auth/authState';
 import { useLocation } from 'react-router-dom';
 import '../pages/ChatListPage.css';
 
@@ -57,7 +57,7 @@ const AuthGate: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <div className="chat-list-page">
         <header className="chat-list-header">
           <h1>Erro ao autenticar</h1>
-          <p>Tente novamente mais tarde</p>
+          <p>Tente novamente mais tarde - {JSON.stringify(getSessionUser())}</p>
         </header>
       </div>
     );
