@@ -57,7 +57,7 @@ const AuthGate: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <div className="chat-list-page">
         <header className="chat-list-header">
           <h1>Erro ao autenticar</h1>
-          <p>Tente novamente mais tarde - {JSON.stringify(getSessionUser())}</p>
+          <p>Tente novamente mais tarde</p>
         </header>
       </div>
     );
