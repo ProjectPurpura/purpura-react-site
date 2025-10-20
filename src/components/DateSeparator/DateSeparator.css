@@ -1,0 +1,32 @@
+/* src/components/DateSeparator/DateSeparator.css */
+.date-separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 12px 0;
+}
+
+.date-separator::before,
+.date-separator::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.date-separator:not(:empty)::before {
+  margin-right: .25em;
+}
+
+.date-separator:not(:empty)::after {
+  margin-left: .25em;
+}
+
+.date-separator-text {
+  background-color: #ffffff;
+  padding: 0 10px;
+  font-size: 0.8em;
+  font-weight: 600;
+  color: #6c757d;
+}
+
+

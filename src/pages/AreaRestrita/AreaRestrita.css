@@ -1,0 +1,38 @@
+/* src/pages/AreaRestrita/AreaRestrita.css */
+
+.area-restrita-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #fff;
+}
+
+.area-restrita-header {
+  display: flex;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #754EA0;
+  color: white;
+}
+
+.area-restrita-logo {
+  height: 60px;
+  margin-right: 1rem;
+}
+
+.area-restrita-title {
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.area-restrita-main {
+  flex: 1;
+  overflow: hidden;
+}
+
+.area-restrita-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}

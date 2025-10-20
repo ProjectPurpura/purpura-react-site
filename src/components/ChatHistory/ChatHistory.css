@@ -1,0 +1,22 @@
+/* src/components/ChatHistory/ChatHistory.css */
+.chat-history {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 12px 10px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  padding-bottom: calc(12px + var(--safe-bottom, 0px));
+}
+
+.empty-chat-message {
+  margin: auto;
+  text-align: center;
+  color: #a0a0a0;
+  padding: 0 16px;
+}
+
+
