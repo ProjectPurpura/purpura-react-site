@@ -1,9 +1,7 @@
 name: Build and Deploy to Render
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
@@ -25,8 +23,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/purpuraambiental/purpura-react-site:${{ github.run_number }}
-            ghcr.io/purpuraambiental/purpura-react-site:latest
+            ghcr.io/purpuraambiental/react-site-purpura:${{ github.run_number }}
+            ghcr.io/purpuraambiental/react-site-purpura:latest
 
       - name: Trigger Render Deploy
         run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
