@@ -4,21 +4,22 @@ Uma plataforma de comunicação em tempo real para conectar empresas do ecossist
 
 ## ✨ O que o site oferece
 
-- **Conversas entre empresas**: trocas diretas e privadas, organizadas por lista de conversas e páginas de chat
-- **Mensagens instantâneas**: envio e recebimento na hora, sem precisar recarregar a página
-- **Indicador de digitação**: mostra as "três bolinhas" enquanto alguém está escrevendo
-- **Contagem de não lidas**: cada conversa exibe quantas mensagens do outro participante ainda não foram lidas
-- **Suporte com IA (PurpurIA)**: canal dedicado para dúvidas e orientação
-- **Mensagens com formatação**: suporte a textos com formatação simples (Markdown) para melhor leitura
+- **Conversas entre empresas**: Trocas diretas e privadas, organizadas por lista de conversas e páginas de chat
+- **Mensagens instantâneas**: Envio e recebimento na hora, sem precisar recarregar a página
+- **Indicador de digitação**: Mostra as "três bolinhas" enquanto alguém está escrevendo
+- **Contagem de não lidas**: Cada conversa exibe quantas mensagens do outro participante ainda não foram lidas
+- **Suporte com IA (PurpurIA)**: Canal dedicado para dúvidas e orientação
+- **Mensagens com formatação**: Suporte a textos com formatação simples (Markdown) para melhor leitura
+- **Dashboard BI Integrado**: Área restrita com Power BI para análise de dados
 
 ## 🛠️ Tecnologias usadas
 
-- **React**: base da interface, garantindo navegação simples e componentes reutilizáveis
-- **TypeScript**: aumenta a segurança do código e reduz erros
-- **WebSockets com STOMP**: mantém o chat em tempo real, com entrega imediata de mensagens
-- **Zustand**: guarda conversas, mensagens, empresas e o status de digitação de forma leve
-- **React Router**: organiza a navegação entre a lista de chats e cada conversa
-- **date-fns e Lucide**: padronizam datas e oferecem ícones modernos e leves
+- **React**: Base da interface, garantindo navegação simples e componentes reutilizáveis
+- **TypeScript**: Aumenta a segurança do código e reduz erros
+- **WebSockets com STOMP**: Mantém o chat em tempo real, com entrega imediata de mensagens
+- **Zustand**: Guarda conversas, mensagens, empresas e o status de digitação de forma leve
+- **React Router**: Organiza a navegação entre a lista de chats e cada conversa
+- **date-fns e Lucide**: Padronizam datas e oferecem ícones modernos e leves
 
 ## 📁 Estrutura do Projeto
 
@@ -56,8 +57,32 @@ Cada página representa uma rota da aplicação:
 - **`ChatListPage/`** - Lista principal de conversas
 - **`ConversationPage/`** - Página individual de conversa
 - **`SupportPage/`** - Canal de suporte com PurpurIA
-- **`AreaRestrita/`** - Dashboard BI integrado
+- **`AreaRestrita/`** - Dashboard BI integrado com validação de CNPJ e acesso ao Power BI
 - **`PathLoginPage/`** - Página de login via hash
+
+### Área Restrita - Dashboard BI
+
+A **AreaRestrita** é uma funcionalidade especial que integra o Power BI da Microsoft para fornecer análises de dados empresariais:
+
+#### Funcionalidades:
+- **Validação de CNPJ**: Sistema completo de validação com formatação automática (XX.XXX.XXX/XXXX-XX)
+- **Verificação de dígitos**: Algoritmo de validação dos dígitos verificadores do CNPJ
+- **Interface responsiva**: Design moderno com cores da marca Purpura (#754EA0)
+- **Integração Power BI**: Iframe embarcado com dashboard interativo
+- **Controle de acesso**: Acesso restrito mediante validação de CNPJ
+
+#### Fluxo de Acesso:
+1. Usuário acessa a rota `/arearestrita`
+2. Sistema solicita CNPJ com formatação automática
+3. Validação em tempo real dos dígitos verificadores
+4. Após validação, exibe dashboard Power BI em tela cheia
+5. Dashboard carregado via iframe do Power BI
+
+#### Características Técnicas:
+- **Validação client-side**: Algoritmo de CNPJ implementado em TypeScript
+- **Formatação automática**: Máscara aplicada durante digitação
+- **Feedback visual**: Estados de erro e sucesso claramente indicados
+- **Responsividade**: Interface adaptável para diferentes tamanhos de tela
 
 ### Hooks Customizados (`src/hooks/`)
 
