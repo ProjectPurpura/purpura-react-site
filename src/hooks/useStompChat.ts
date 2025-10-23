@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 import { Client, IMessage, StompSubscription } from '@stomp/stompjs';
 import { useChatStore, Message } from '../store/chatStore';
 import { getSessionUser, setSessionUser, setAuthStatus, getAuthStatus, SessionUser } from '../auth/authState';
+import { useNavigate } from 'react-router-dom';
 
 type Incoming = {
   id: string;
@@ -67,18 +68,25 @@ export const useStompChat = (conversationId: string | undefined) => {
   const clientRef = useRef<Client | null>(null);
   const subMsgRef = useRef<StompSubscription | null>(null);
   const addMessage = useChatStore((state) => state.addMessageToConversation);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (!conversationId || conversationId === 'null') return;
+    const url = new URL(window.location.href);
+    const hash = url.hash || '';
+    const hashCnpjMatch = hash.match(/[#|&]cnpj=([^&]+)/);
+    const queryCnpj = url.searchParams.get('cnpj');
+    const cnpjRaw = hashCnpjMatch ? decodeURIComponent(hashCnpjMatch[1] || '') : (queryCnpj || '');
+
+    const cnpj = cnpjRaw ? cnpjRaw.replace(/\D/g, '') : null;
 
     const initializeChat = async () => {
       const currentAuthStatus = getAuthStatus();
       const existingSession = getSessionUser() as SessionUser;
-      
+
       if (currentAuthStatus !== 'ok' || !existingSession?.cnpj) {
         console.log('[STOMP] Attempting authentication from URL hash...');
         setAuthStatus('loading');
-        
+
         const authenticatedUser = await authenticateUserFromHash();
         if (authenticatedUser) {
           setSessionUser(authenticatedUser);
@@ -88,6 +96,20 @@ export const useStompChat = (conversationId: string | undefined) => {
           setAuthStatus('missing');
           console.error('[STOMP] Authentication failed');
           return;
+        }
+      }
+
+      if (cnpj) {
+        if (conversationId && conversationId !== 'null') {
+          const newUrl = new URL(window.location.href);
+          newUrl.pathname = `/chat/${conversationId}`;
+          newUrl.hash = `#cnpj=${cnpj}`;
+          window.history.replaceState({}, '', newUrl.toString());
+        } else {
+          const newUrl = new URL(window.location.href);
+          newUrl.pathname = '/';
+          newUrl.hash = `#cnpj=${cnpj}`;
+          window.history.replaceState({}, '', newUrl.toString());
         }
       }
 
@@ -112,26 +134,28 @@ export const useStompChat = (conversationId: string | undefined) => {
       client.onConnect = () => {
         try { subMsgRef.current?.unsubscribe(); } catch {}
 
-        subMsgRef.current = client.subscribe(`/topic/chat.${conversationId}`, (frame: IMessage) => {
-          try {
-            const incoming: Incoming = JSON.parse(frame.body);
-            const session: any = getSessionUser();
-            const myId = session?.cnpj || session?.userHash || '';
-            const receivedMessage: Message = {
-              messageId: incoming.id,
-              senderId: incoming.senderId,
-              corpo: incoming.content,
-              timestamp: incoming.timestamp ?? Date.now(),
-              read: !!incoming.read,
-              isUser: myId ? incoming.senderId === myId : false,
-            };
-            if (!myId || receivedMessage.senderId !== myId) {
-              addMessage(conversationId, receivedMessage);
+        if (conversationId && conversationId !== 'null') {
+          subMsgRef.current = client.subscribe(`/topic/chat.${conversationId}`, (frame: IMessage) => {
+            try {
+              const incoming: Incoming = JSON.parse(frame.body);
+              const session: any = getSessionUser();
+              const myId = session?.cnpj || session?.userHash || '';
+              const receivedMessage: Message = {
+                messageId: incoming.id,
+                senderId: incoming.senderId,
+                corpo: incoming.content,
+                timestamp: incoming.timestamp ?? Date.now(),
+                read: !!incoming.read,
+                isUser: myId ? incoming.senderId === myId : false,
+              };
+              if (!myId || receivedMessage.senderId !== myId) {
+                addMessage(conversationId, receivedMessage);
+              }
+            } catch (e) {
+              console.error('Falha ao processar mensagem STOMP:', e);
             }
-          } catch (e) {
-            console.error('Falha ao processar mensagem STOMP:', e);
-          }
-        });
+          });
+        }
       };
 
       client.onStompError = (frame) => {
@@ -151,7 +175,7 @@ export const useStompChat = (conversationId: string | undefined) => {
       clientRef.current = null;
       subMsgRef.current = null;
     };
-  }, [conversationId, addMessage]);
+  }, [conversationId, addMessage, navigate]);
 
   const sendMessage = (text: string, senderId: string) => {
     console.log('[SEND] attempting', { text, senderId, conversationId, connected: !!clientRef.current?.connected });
