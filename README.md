@@ -11,6 +11,8 @@ Uma plataforma de comunicação em tempo real para conectar empresas do ecossist
 - **Suporte com IA (PurpurIA)**: Canal dedicado para dúvidas e orientação
 - **Mensagens com formatação**: Suporte a textos com formatação simples (Markdown) para melhor leitura
 - **Dashboard BI Integrado**: Área restrita com Power BI para análise de dados
+- **Autenticação Flexível**: Acesso direto a chats específicos via URL com CNPJ
+- **Sessão Persistente**: Manutenção automática de login entre navegações
 
 ## 🛠️ Tecnologias usadas
 
@@ -86,7 +88,26 @@ A **AreaRestrita** é uma funcionalidade especial que integra o Power BI da Micr
 
 ### Hooks Customizados (`src/hooks/`)
 
-- **`useStompChat`** - Gerencia conexão WebSocket e envio de mensagens em tempo real
+- **`useStompChat`** - Gerencia conexão WebSocket, autenticação automática e envio de mensagens em tempo real
+
+#### Funcionalidades do useStompChat:
+
+**🔐 Autenticação Automática:**
+- **Detecção de CNPJ na URL**: Suporte a `#cnpj=CNPJ` e `?cnpj=CNPJ`
+- **Autenticação centralizada**: Verifica status de autenticação antes de conectar WebSocket
+- **Limpeza automática de URL**: Remove parâmetros sensíveis após autenticação
+- **Persistência de sessão**: Mantém usuário autenticado entre navegações
+
+**🔄 Fluxos de Acesso Suportados:**
+1. **Fluxo Padrão**: `/#cnpj=12345678000199` → Lista de conversas
+2. **Acesso Direto**: `/chat/123/#cnpj=12345678000199` → Chat específico
+3. **Sessão Existente**: Usuário já autenticado → Conexão direta
+
+**⚡ Características Técnicas:**
+- **Validação em tempo real**: Verifica autenticação antes de estabelecer conexão
+- **Fallback inteligente**: Tenta autenticação via URL se sessão não existir
+- **Type Safety**: Interface `SessionUser` para tipagem segura
+- **Error Handling**: Tratamento robusto de falhas de autenticação
 
 ### Gerenciamento de Estado (`src/store/`)
 
@@ -130,6 +151,42 @@ O `useHashLoginBootstrap` é responsável por:
 5. Remove CNPJ da URL por segurança
 6. Define status como 'ok' para permitir acesso
 ```
+
+### Fluxos de Acesso
+
+#### 🔗 Acesso Direto a Chats
+O sistema suporta acesso direto a conversas específicas via URL:
+
+**Padrão de URL:**
+```
+/chat/{CHAT_ID}/#cnpj={CNPJ_DO_USUARIO}
+```
+
+**Exemplo:**
+```
+/chat/123456/#cnpj=12345678000199
+```
+
+**Fluxo de Execução:**
+1. Usuário acessa URL com chat específico e CNPJ
+2. `useStompChat` detecta necessidade de autenticação
+3. Autenticação automática usando CNPJ da URL
+4. Conexão WebSocket estabelecida para o chat específico
+5. Usuário conectado diretamente à conversa
+
+#### 🔄 Compatibilidade de Fluxos
+
+| URL Pattern | Comportamento |
+|-------------|---------------|
+| `/#cnpj=CNPJ` | Autenticação → Lista de conversas |
+| `/chat/ID/#cnpj=CNPJ` | Autenticação → Chat específico |
+| `/chat/ID/` (sessão ativa) | Conexão direta ao chat |
+
+#### 🛡️ Segurança e Persistência
+- **Limpeza automática de URL**: Parâmetros sensíveis removidos após autenticação
+- **Sessão persistente**: Login mantido entre navegações
+- **Fallback inteligente**: Tenta autenticação via URL se sessão não existir
+- **Type Safety**: Validação de tipos em todas as operações de autenticação
 
 ## 🔄 Fluxo de Dados
 
