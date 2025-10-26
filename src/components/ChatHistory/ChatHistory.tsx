@@ -3,6 +3,7 @@ import React, { useRef, useLayoutEffect } from 'react';
 import { useChatStore, Message } from '../../store/chatStore';
 import ChatMessage from '../ChatMessage/ChatMessage';
 import DateSeparator from '../DateSeparator/DateSeparator';
+import TypingIndicator from '../TypingIndicator/TypingIndicator';
 import './ChatHistory.css';
 import { isSameDay, isToday, isYesterday, format, getYear } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -30,6 +31,10 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({ conversationId, currentUserId
     (state) => state.conversations[conversationId]?.messages || emptyMessages
   );
 
+  const isAiTyping = useChatStore(
+    (state) => state.getIsTyping(conversationId, 'PurpurIA')
+  );
+
   const sortedMessages = [...messages].sort((a, b) => a.timestamp - b.timestamp);
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -49,7 +54,7 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({ conversationId, currentUserId
 
       node.dataset.messagesCount = String(sortedMessages.length);
     }
-  }, [sortedMessages]);
+  }, [sortedMessages, isAiTyping]);
 
   return (
     <div className="chat-history" ref={chatContainerRef}>
@@ -58,24 +63,33 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({ conversationId, currentUserId
           <p>Nenhuma mensagem ainda. Envie a primeira!</p>
         </div>
       ) : (
-        sortedMessages.map((msg, index) => {
-          const previousMessage = sortedMessages[index - 1];
-          const showDateSeparator =
-            !previousMessage ||
-            !isSameDay(new Date(msg.timestamp), new Date(previousMessage.timestamp));
+        <>
+          {sortedMessages.map((msg, index) => {
+            const previousMessage = sortedMessages[index - 1];
+            const showDateSeparator =
+              !previousMessage ||
+              !isSameDay(new Date(msg.timestamp), new Date(previousMessage.timestamp));
 
-          const isUserMessage = msg.senderId === currentUserId;
-          const messageWithLayout = { ...msg, isUser: isUserMessage };
+            const isUserMessage = msg.senderId === currentUserId;
+            const messageWithLayout = { ...msg, isUser: isUserMessage };
 
-          return (
-            <React.Fragment key={msg.messageId}>
-              {showDateSeparator && (
-                <DateSeparator date={formatDateSeparator(msg.timestamp)} />
-              )}
-              <ChatMessage message={messageWithLayout} />
-            </React.Fragment>
-          );
-        })
+            return (
+              <React.Fragment key={msg.messageId}>
+                {showDateSeparator && (
+                  <DateSeparator date={formatDateSeparator(msg.timestamp)} />
+                )}
+                <ChatMessage message={messageWithLayout} />
+              </React.Fragment>
+            );
+          })}
+          {isAiTyping && (
+            <div className="chat-message-container chat-message-container--other">
+              <div className="typing-indicator-wrapper">
+                <TypingIndicator />
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

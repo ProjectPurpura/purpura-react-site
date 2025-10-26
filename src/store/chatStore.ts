@@ -48,15 +48,28 @@ export const useChatStore = create<ChatState>((set, get) => ({
   addMessageToConversation: (conversationId, message) =>
     set((state) => {
       const newConversations = { ...state.conversations };
-      const conversation = newConversations[conversationId];
-      if (conversation) {
-        if (!conversation.messages.some(m => m.messageId === message.messageId)) {
-          conversation.messages.push(message);
-          conversation.lastMessagePreview = message.corpo;
-          conversation.lastUpdated = message.timestamp;
-          conversation.unreadCount = (conversation.unreadCount || 0) + (message.isUser ? 0 : (message.read ? 0 : 1));
-        }
+      let conversation = newConversations[conversationId];
+      
+      if (!conversation) {
+        conversation = {
+          chatId: conversationId,
+          participants: [message.senderId],
+          messages: [],
+          lastMessagePreview: '',
+          lastUpdated: Date.now(),
+          unreadCount: 0,
+          typing: {},
+        };
+        newConversations[conversationId] = conversation;
       }
+      
+      if (!conversation.messages.some(m => m.messageId === message.messageId)) {
+        conversation.messages.push(message);
+        conversation.lastMessagePreview = message.corpo;
+        conversation.lastUpdated = message.timestamp;
+        conversation.unreadCount = (conversation.unreadCount || 0) + (message.isUser ? 0 : (message.read ? 0 : 1));
+      }
+      
       return { conversations: newConversations };
     }),
 

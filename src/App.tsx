@@ -29,10 +29,10 @@ function App() {
         <AuthGate>
           <Routes>
             <Route path="/arearestrita" element={<AreaRestrita />} />
-            <Route path="/:loginHash/" element={<PathLoginPage />} />
-            <Route path="/" element={<ChatListPage />} />
             <Route path="/chat/:conversationId" element={<ConversationPage />} />
             <Route path="/suporte" element={<SupportPage />} />
+            <Route path="/" element={<ChatListPage />} />
+            <Route path="/:loginHash/" element={<PathLoginPage />} />
           </Routes>
         </AuthGate>
       </div>

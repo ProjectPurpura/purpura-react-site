@@ -37,6 +37,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ conversationId, onSendMessage, cu
     };
     addMessage(conversationId, userMessage);
 
+    console.log('[ChatInput] handleSubmit, enviando:', trimmedText);
     onSendMessage(trimmedText);
 
     setText('');
@@ -61,5 +62,3 @@ const ChatInput: React.FC<ChatInputProps> = ({ conversationId, onSendMessage, cu
 };
 
 export default ChatInput;
-
-
