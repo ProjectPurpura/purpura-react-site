@@ -1,5 +1,4 @@
 /* src/pages/AreaRestrita/AreaRestrita.css */
-
 .area-restrita-container {
   display: flex;
   flex-direction: column;
@@ -10,9 +9,37 @@
 .area-restrita-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 1rem 2rem;
   background-color: #754EA0;
   color: white;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-email {
+  font-size: 0.9rem;
+  color: white;
+}
+
+.logout-btn {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.logout-btn:hover {
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 .area-restrita-logo {
@@ -115,4 +142,109 @@
   margin-top: -16px;
   margin-bottom: 12px;
   align-self: flex-start;
+}
+
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: white;
+  border: 2px solid #754EA0;
+  padding: 32px;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(117, 78, 160, 0.3);
+  min-width: 380px;
+  max-width: 450px;
+  width: 100%;
+}
+
+.auth-title {
+  font-size: 1.75rem;
+  color: #754EA0;
+  margin-bottom: 24px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  font-size: 1rem;
+  color: #754EA0;
+  font-weight: 500;
+}
+
+.form-input {
+  font-size: 1rem;
+  padding: 12px 14px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  width: 100%;
+  transition: border-color 0.3s;
+}
+
+.form-input:focus {
+  border-color: #754EA0;
+  outline: none;
+}
+
+.form-input:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.auth-btn {
+  background-color: #754EA0;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s;
+  margin-top: 8px;
+}
+
+.auth-btn:hover:enabled {
+  background-color: #5a3a81;
+}
+
+.auth-btn:disabled {
+  background-color: #cbbde0;
+  cursor: not-allowed;
+}
+
+.toggle-auth-btn {
+  background-color: transparent;
+  color: #754EA0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 8px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  transition: opacity 0.3s;
+  text-decoration: underline;
+}
+
+.toggle-auth-btn:hover:enabled {
+  opacity: 0.7;
+}
+
+.toggle-auth-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

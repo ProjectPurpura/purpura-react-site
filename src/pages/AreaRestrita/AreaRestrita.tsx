@@ -1,55 +1,89 @@
 // src/pages/AreaRestrita/AreaRestrita.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  User
+} from 'firebase/auth';
+import { auth } from '../../firebaseConfig';
 import './AreaRestrita.css';
 
-const validarCnpj = (cnpj: string): boolean => {
-  cnpj = cnpj.replace(/[^\d]+/g, '');
-  if (cnpj.length !== 14) return false;
-  if (/^(\d)\1{13}$/.test(cnpj)) return false;
-
-  const calcDigito = (base: string, pesos: number[]): number => {
-    let soma = 0;
-    for(let i = 0; i < pesos.length; i++) {
-      soma += parseInt(base.charAt(i)) * pesos[i];
-    }
-    const resto = soma % 11;
-    return resto < 2 ? 0 : 11 - resto;
-  }
-
-  const base = cnpj.substr(0, 12);
-  const digito1 = calcDigito(base, [5,4,3,2,9,8,7,6,5,4,3,2]);
-  const digito2 = calcDigito(base + digito1, [6,5,4,3,2,9,8,7,6,5,4,3,2]);
-
-  return cnpj === base + digito1.toString() + digito2.toString();
-}
-
 const AreaRestrita: React.FC = () => {
-  const [cnpj, setCnpj] = useState('');
-  const [isValidCnpj, setIsValidCnpj] = useState(false);
-  const [showBI, setShowBI] = useState(false);
-  const [touched, setTouched] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [authError, setAuthError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleCnpjChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value;
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    
+    return () => unsubscribe();
+  }, []);
 
-    value = value
-      .replace(/\D/g, '')
-      .replace(/^(\d{2})(\d)/, '$1.$2')
-      .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
-      .replace(/\.(\d{3})(\d)/, '.$1/$2')
-      .replace(/(\d{4})(\d)/, '$1-$2')
-      .slice(0, 18);
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthError('');
+    setIsLoading(true);
 
-    setCnpj(value);
-    setIsValidCnpj(validarCnpj(value));
-    setTouched(true);
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+    } catch (error: any) {
+      const errorMessage = getErrorMessage(error.code);
+      setAuthError(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleConfirm = () => {
-    if (isValidCnpj) {
-      setShowBI(true);
-    } else {
-      alert('Por favor, digite um CNPJ válido.');
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthError('');
+    setIsLoading(true);
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (error: any) {
+      const errorMessage = getErrorMessage(error.code);
+      setAuthError(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error);
+    }
+  };
+
+  const getErrorMessage = (errorCode: string): string => {
+    switch (errorCode) {
+      case 'auth/email-already-in-use':
+        return 'Este email já está em uso.';
+      case 'auth/invalid-email':
+        return 'Email inválido.';
+      case 'auth/operation-not-allowed':
+        return 'Operação não permitida.';
+      case 'auth/weak-password':
+        return 'A senha deve ter pelo menos 6 caracteres.';
+      case 'auth/user-disabled':
+        return 'Esta conta foi desabilitada.';
+      case 'auth/user-not-found':
+        return 'Usuário não encontrado.';
+      case 'auth/wrong-password':
+        return 'Senha incorreta.';
+      case 'auth/invalid-credential':
+        return 'Credenciais inválidas.';
+      default:
+        return 'Erro ao autenticar. Tente novamente.';
     }
   };
 
@@ -62,33 +96,81 @@ const AreaRestrita: React.FC = () => {
           className="area-restrita-logo"
         />
         <h1 className="area-restrita-title">Purpura BI Dashboard</h1>
+        {user && (
+          <div className="user-info">
+            <span className="user-email">{user.email}</span>
+            <button onClick={handleLogout} className="logout-btn">
+              Sair
+            </button>
+          </div>
+        )}
       </header>
       <main className="area-restrita-main">
-        {!showBI ? (
-          <div className="cnpj-input-container">
-            <label htmlFor="cnpj-input" className="cnpj-label">Digite seu CNPJ</label>
-            <input
-              type="text"
-              id="cnpj-input"
-              value={cnpj}
-              onChange={handleCnpjChange}
-              placeholder="00.000.000/0000-00"
-              maxLength={18}
-              className={`cnpj-input ${touched && !isValidCnpj ? 'input-error' : ''}`}
-            />
-            {touched && !cnpj && (
-              <span className="error-message">Por favor, digite seu CNPJ</span>
-            )}
-            {touched && !isValidCnpj && cnpj && (
-              <span className="error-message">CNPJ inválido</span>
-            )}
-            <button
-              onClick={handleConfirm}
-              className="confirm-btn"
-              disabled={!isValidCnpj}
-            >
-              Confirmar
-            </button>
+        {!user ? (
+          <div className="auth-container">
+            <h2 className="auth-title">
+              {isRegistering ? 'Criar Conta' : 'Entrar'}
+            </h2>
+            <form onSubmit={isRegistering ? handleRegister : handleLogin} className="auth-form">
+              <div className="form-group">
+                <label htmlFor="email-input" className="form-label">Email</label>
+                <input
+                  type="email"
+                  id="email-input"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="seu@email.com"
+                  className="form-input"
+                  required
+                  disabled={isLoading}
+                />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="password-input" className="form-label">Senha</label>
+                <input
+                  type="password"
+                  id="password-input"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="******"
+                  className="form-input"
+                  required
+                  minLength={6}
+                  disabled={isLoading}
+                />
+              </div>
+
+              {authError && (
+                <div className="error-message">{authError}</div>
+              )}
+
+              <button 
+                type="submit" 
+                className="auth-btn"
+                disabled={isLoading}
+              >
+                {isLoading 
+                  ? 'Processando...' 
+                  : isRegistering ? 'Cadastrar' : 'Entrar'
+                }
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setIsRegistering(!isRegistering);
+                  setAuthError('');
+                }}
+                className="toggle-auth-btn"
+                disabled={isLoading}
+              >
+                {isRegistering 
+                  ? 'Já tem uma conta? Entrar' 
+                  : 'Não tem uma conta? Cadastrar'
+                }
+              </button>
+            </form>
           </div>
         ) : (
           <iframe
