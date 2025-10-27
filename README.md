@@ -1,5 +1,11 @@
 # 💬 Plataforma de Chat Purpura
 
+[![React](https://img.shields.io/badge/React-19.1-blue.svg)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-4.9-blue.svg)](https://www.typescriptlang.org/)
+[![Node](https://img.shields.io/badge/Node-18%2B-green.svg)](https://nodejs.org/)
+[![Firebase](https://img.shields.io/badge/Firebase-9.0-orange.svg)](https://firebase.google.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 Uma plataforma de comunicação em tempo real para conectar empresas do ecossistema **Purpura**, com suporte da assistente de IA **PurpurIA** para um atendimento rápido e intuitivo.
 
 ## ✨ O que o site oferece
@@ -10,15 +16,21 @@ Uma plataforma de comunicação em tempo real para conectar empresas do ecossist
 - **Contagem de não lidas**: cada conversa exibe quantas mensagens do outro participante ainda não foram lidas
 - **Suporte com IA (PurpurIA)**: canal dedicado para dúvidas e orientação
 - **Mensagens com formatação**: suporte a textos com formatação simples (Markdown) para melhor leitura
+- **Área Restrita**: dashboard com Business Intelligence (BI) integrado
+- **Separadores de data**: organização visual de mensagens por dia
+- **Interface responsiva**: adaptação automática para dispositivos móveis e desktop
 
 ## 🛠️ Tecnologias usadas
 
-- **React**: base da interface, garantindo navegação simples e componentes reutilizáveis
+- **React 19**: base da interface, garantindo navegação simples e componentes reutilizáveis
 - **TypeScript**: aumenta a segurança do código e reduz erros
+- **Firebase Authentication**: gerenciamento de autenticação e sessão de usuários
 - **WebSockets com STOMP**: mantém o chat em tempo real, com entrega imediata de mensagens
 - **Zustand**: guarda conversas, mensagens, empresas e o status de digitação de forma leve
 - **React Router**: organiza a navegação entre a lista de chats e cada conversa
 - **date-fns e Lucide**: padronizam datas e oferecem ícones modernos e leves
+- **React Markdown**: renderização de mensagens com formatação Markdown
+- **crypto-js**: utilitários de criptografia para segurança de dados
 
 ## 📁 Estrutura do Projeto
 
@@ -53,11 +65,23 @@ Cada componente possui sua própria pasta com arquivos `.tsx` e `.css`:
 
 Cada página representa uma rota da aplicação:
 
-- **`ChatListPage/`** - Lista principal de conversas
-- **`ConversationPage/`** - Página individual de conversa
-- **`SupportPage/`** - Canal de suporte com PurpurIA
-- **`AreaRestrita/`** - Dashboard BI integrado
-- **`PathLoginPage/`** - Página de login via hash
+- **`ChatListPage/`** - Lista principal de conversas (`/`)
+- **`ConversationPage/`** - Página individual de conversa (`/chat/:conversationId`)
+- **`SupportPage/`** - Canal de suporte com PurpurIA (`/suporte`)
+- **`AreaRestrita/`** - Dashboard BI integrado (`/arearestrita`)
+- **`PathLoginPage/`** - Página de login via hash (`/:loginHash/`)
+
+#### Rotas Disponíveis
+
+| Rota | Descrição | Requer Auth |
+|------|-----------|-------------|
+| `/` | Lista de todas as conversas | ✅ Sim |
+| `/chat/:conversationId` | Conversa específica | ✅ Sim |
+| `/suporte` | Canal de suporte com PurpurIA | ✅ Sim |
+| `/arearestrita` | Dashboard de Business Intelligence | ✅ Sim |
+| `/:loginHash/` | Login via hash específico | ❌ Não |
+| `/#cnpj=CNPJ` | Autenticação via CNPJ no hash | ❌ Não |
+| `/?cnpj=CNPJ` | Autenticação via CNPJ na query | ❌ Não |
 
 ### Hooks Customizados (`src/hooks/`)
 
@@ -100,7 +124,14 @@ Cada página representa uma rota da aplicação:
 ### Autenticação (`src/auth/`)
 
 - **`authState.ts`** - Gerenciamento de sessão e status de autenticação
-- **`hmac.ts`** - Utilitários de segurança
+- **`hmac.ts`** - Utilitários de segurança e criptografia
+
+### Configuração (`src/`)
+
+- **`firebaseConfig.ts`** - Configuração e inicialização do Firebase Authentication
+  - Validação automática de variáveis de ambiente
+  - Exporta instância do Firebase Auth
+  - Tratamento de erros de configuração
 
 ## ⚙️ Inicialização da Aplicação
 
@@ -178,11 +209,26 @@ API REST → chatApi.ts → chatStore.ts → Componentes
 WebSocket → useStompChat → chatStore.ts → Componentes
 ```
 
+## 🔒 Segurança
+
+### Práticas de Segurança Implementadas
+
+- **Limpeza automática de URL**: Parâmetros sensíveis (CNPJ) são removidos da URL após autenticação
+- **Validação de CNPJ**: Verificação do formato e existência do CNPJ no backend
+- **Criptografia de dados**: Uso de crypto-js para operações criptográficas
+- **HMAC para integridade**: Verificação de integridade de dados sensíveis
+- **Firebase Authentication**: Gerenciamento seguro de sessões
+- **Type Safety**: TypeScript previne erros de tipo em toda a aplicação
+- **Variáveis de ambiente**: Credenciais nunca são commitadas no código
+
 ## 🚀 Como executar
 
 ### Pré-requisitos
-- Node.js 18+
-- NPM ou Yarn
+
+**Obrigatório:**
+- Node.js 18+ ou Node.js 20 (recomendado)
+- NPM 8+ ou Yarn 1.22+
+- Conta Firebase (para autenticação)
 
 ### Instalação
 
@@ -202,10 +248,31 @@ yarn install
 3. **Configurar ambiente**
 
 Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
+
 ```env
+# API, ChatBot e WebSocket
 REACT_APP_API_URL=https://URL_DA_API
 REACT_APP_WEBSOCKET_URL=wss://URL_DO_WEBSOCKET
+REACT_APP_CHATBOT_URL=https://URL_DO_CHATBOT
+
+# Firebase Authentication
+REACT_APP_FIREBASE_API_KEY=sua_api_key
+REACT_APP_FIREBASE_AUTH_DOMAIN=seu_projeto.firebaseapp.com
+REACT_APP_FIREBASE_PROJECT_ID=seu_projeto_id
+REACT_APP_FIREBASE_STORAGE_BUCKET=seu_projeto.appspot.com
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID=seu_sender_id
+REACT_APP_FIREBASE_APP_ID=seu_app_id
+REACT_APP_FIREBASE_MEASUREMENT_ID=seu_measurement_id
 ```
+
+> **Nota**: As variáveis do Firebase são obrigatórias para o funcionamento da autenticação.
+
+**Como obter as credenciais do Firebase:**
+1. Acesse o [Console do Firebase](https://console.firebase.google.com/)
+2. Selecione seu projeto ou crie um novo
+3. Vá em Configurações do Projeto > Geral
+4. Em "Seus apps", selecione o app web ou crie um novo
+5. Copie as credenciais da configuração do Firebase
 
 4. **Executar em desenvolvimento**
 ```bash
@@ -224,20 +291,11 @@ npm run build
 
 Gera os arquivos otimizados na pasta `build/` para deploy.
 
-## 🌐 Deploy
-
-### Render (Recomendado)
-
-1. Conecte o repositório ao Render
-2. Configure como "Static Site"
-3. **Build Command**: `npm run build`
-4. **Publish Directory**: `build`
-5. Configure as variáveis de ambiente no dashboard
-
 ### Configuração de Roteamento
 
-O projeto inclui `static.json` para garantir que todas as rotas funcionem corretamente:
+O projeto inclui arquivos de configuração para garantir que todas as rotas funcionem corretamente:
 
+**Para Render/servidores Node.js (`static.json`):**
 ```json
 {
   "root": "build/",
