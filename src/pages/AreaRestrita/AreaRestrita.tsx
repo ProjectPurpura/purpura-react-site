@@ -92,10 +92,10 @@ const AreaRestrita: React.FC = () => {
       <header className="area-restrita-header">
         <img
           src="/logo.svg"
-          alt="Purpura Logo"
+          alt="PurPura Logo"
           className="area-restrita-logo"
         />
-        <h1 className="area-restrita-title">Purpura BI Dashboard</h1>
+        <h1 className="area-restrita-title">PurPura BI Dashboard</h1>
         {user && (
           <div className="user-info">
             <span className="user-email">{user.email}</span>
@@ -175,7 +175,7 @@ const AreaRestrita: React.FC = () => {
         ) : (
           <iframe
             src="https://app.powerbi.com/view?r=eyJrIjoiYjIxY2ZmZDEtN2Y3ZS00YzFjLWE3NGYtMGQ1MmZhNTUyMDUzIiwidCI6ImIxNDhmMTRjLTIzOTctNDAyYy1hYjZhLTFiNDcxMTE3N2FjMCJ9"
-            title="Dashboard BI Purpura"
+            title="Dashboard BI PurPura"
             className="area-restrita-iframe"
             frameBorder="0"
             allowFullScreen

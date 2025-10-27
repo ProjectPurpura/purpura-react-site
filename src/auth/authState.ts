@@ -1,5 +1,5 @@
 // src/auth/authState.ts
-const KEY = 'purpura.session';
+const KEY = 'PurPura.session';
 
 export type SessionUser = {
   cnpj: string;
@@ -48,5 +48,5 @@ export function getSessionUser(): SessionUser | {} {
 }
 
 export function clearSession() {
-  try { localStorage.removeItem('purpura.session'); } catch {}
+  try { localStorage.removeItem('PurPura.session'); } catch {}
 }

@@ -1,4 +1,4 @@
-# 💬 Plataforma de Chat Purpura
+# 💬 Plataforma de Chat PurPura
 
 [![React](https://img.shields.io/badge/React-19.1-blue.svg)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-4.9-blue.svg)](https://www.typescriptlang.org/)
@@ -6,7 +6,7 @@
 [![Firebase](https://img.shields.io/badge/Firebase-9.0-orange.svg)](https://firebase.google.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Uma plataforma de comunicação em tempo real para conectar empresas do ecossistema **Purpura**, com suporte da assistente de IA **PurpurIA** para um atendimento rápido e intuitivo.
+Uma plataforma de comunicação em tempo real para conectar empresas do ecossistema **PurPura**, com suporte da assistente de IA **PurpurIA** para um atendimento rápido e intuitivo.
 
 ## ✨ O que o site oferece
 
@@ -234,8 +234,8 @@ WebSocket → useStompChat → chatStore.ts → Componentes
 
 1. **Clonar o projeto**
 ```bash
-git clone https://github.com/PurPuraAmbiental/purpura-react-site.git
-cd purpura-react-site
+git clone https://github.com/PurPuraAmbiental/PurPura-react-site.git
+cd PurPura-react-site
 ```
 
 2. **Instalar dependências**

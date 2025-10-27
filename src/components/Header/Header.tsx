@@ -18,7 +18,7 @@ const Header: React.FC<HeaderProps> = ({ conversationId }) => {
   const isSupportChat = conversationId === 'suporte';
   let displayName = 'Chat';
   let imageUrl = process.env.PUBLIC_URL + '/logo.svg';
-  let imageAlt = 'Logo Purpura';
+  let imageAlt = 'Logo PurPura';
 
   const session: any = getSessionUser();
   const myId = session?.cnpj || session?.userHash || '';
