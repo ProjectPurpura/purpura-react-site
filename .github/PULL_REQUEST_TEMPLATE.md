@@ -4,8 +4,9 @@
 Inclua um resumo da alteração e qual issue foi corrigida. Também inclua motivação e contexto relevantes.
 
 ## ✨ O quê mudou?
-- [ ] Alterar/incluir rotas
+- [ ] Alterar/incluir páginas
 - [ ] Serviços e integração com API
+- [ ] Implementações lógicas
 - [ ] Estilização - CSS
 - [ ] Documentação ou README.md
 - [ ] Esteira de Deploy, CI/CD.
@@ -14,7 +15,7 @@ Inclua um resumo da alteração e qual issue foi corrigida. Também inclua motiv
 ## ✅ Checklist:
 - [x] Realizei uma revisão do meu próprio código
 - [ ] Verifiquei por conflitos com branch main e realizei os merges necessários
-- [ ] Testei os endpoints da API usando o Bruno / Swagger / Postman
+- [ ] Testei as páginas/rotas localmente
 
 ## 🗒️ Notas adicionais
 Adicione qualquer outro contexto ou informação aqui.
