@@ -7,9 +7,10 @@ import './ChatMessage.css';
 
 interface ChatMessageProps {
   message: Message;
+  showTimestamp?: boolean;
 }
 
-const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
+const ChatMessage: React.FC<ChatMessageProps> = ({ message, showTimestamp=false }) => {
   const containerClass = message.isUser
     ? 'chat-message-container chat-message-container--user'
     : 'chat-message-container chat-message-container--other';
@@ -23,9 +24,11 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
       <div className={bubbleClass}>
         <ReactMarkdown>{message.corpo}</ReactMarkdown>
       </div>
-      <span className="message-timestamp">
-        {format(new Date(message.timestamp), 'HH:mm')}
-      </span>
+      {showTimestamp && (
+        <span className="message-timestamp">
+          {format(new Date(message.timestamp), 'HH:mm')}
+        </span>
+      )}
     </div>
   );
 };

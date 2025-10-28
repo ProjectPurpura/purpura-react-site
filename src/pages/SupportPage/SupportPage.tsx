@@ -152,7 +152,7 @@ const SupportPage: React.FC = () => {
   return (
     <div className="support-page-container">
       <Header conversationId={supportConversationId} />
-      <ChatHistory conversationId={supportConversationId} currentUserId={currentUserId} />
+      <ChatHistory conversationId={supportConversationId} currentUserId={currentUserId} showTimestamps={false} />
       <ChatInput
         conversationId={supportConversationId}
         onSendMessage={handleAiSendMessage}

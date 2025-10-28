@@ -94,16 +94,7 @@ export const fetchChatHistory = async (cnpj: string): Promise<Message[]> => {
   }
 
   try {
-    const response = await fetch(`${CHATBOT_API_BASE}/chat`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        senderId: cnpj,
-        chatId: cnpj,
-      }),
-    });
+    const response = await fetch(`${CHATBOT_API_BASE}/chat?senderId=${cnpj}&chatId=${cnpj}`);
 
     if (!response.ok) {
       console.error(`Erro ao buscar histórico de chat: ${response.status} ${response.statusText}`);
