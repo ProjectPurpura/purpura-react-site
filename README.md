@@ -73,15 +73,15 @@ Cada página representa uma rota da aplicação:
 
 #### Rotas Disponíveis
 
-| Rota | Descrição | Requer Auth |
-|------|-----------|-------------|
-| `/` | Lista de todas as conversas | ✅ Sim |
-| `/chat/:conversationId` | Conversa específica | ✅ Sim |
-| `/suporte` | Canal de suporte com PurpurIA | ✅ Sim |
-| `/arearestrita` | Dashboard de Business Intelligence | ✅ Sim |
-| `/:loginHash/` | Login via hash específico | ❌ Não |
-| `/#cnpj=CNPJ` | Autenticação via CNPJ no hash | ❌ Não |
-| `/?cnpj=CNPJ` | Autenticação via CNPJ na query | ❌ Não |
+| Rota | Descrição |
+|------|-----------|
+| `/` | Lista de todas as conversas |
+| `/chat/:conversationId` | Conversa específica |
+| `/suporte` | Canal de suporte com PurpurIA |
+| `/arearestrita` | Dashboard de Business Intelligence |
+| `/:loginHash/` | Login via hash específico |
+| `/#cnpj=CNPJ` | Autenticação via CNPJ no hash |
+| `/?cnpj=CNPJ` | Autenticação via CNPJ na query |
 
 ### Hooks Customizados (`src/hooks/`)
 

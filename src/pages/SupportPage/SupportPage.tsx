@@ -83,11 +83,15 @@ const SupportPage: React.FC = () => {
         try {
           console.log('[SupportPage] Buscando histórico de chat');
           setIsLoadingHistory(true);
+          console.log('[SupportPage] Buscando histórico para CNPJ:', currentUserId);
           const historyMessages = await fetchChatHistory(currentUserId);
-          console.log('[SupportPage] Histórico carregado:', historyMessages.length, 'mensagens');
+          console.log('[SupportPage] Histórico carregado:', historyMessages.length, 'mensagens', historyMessages);
           
           if (historyMessages.length > 0) {
             setMessagesForConversation(supportConversationId, historyMessages);
+            console.log('[SupportPage] Mensagens definidas no estado');
+          } else {
+            console.log('[SupportPage] Nenhuma mensagem no histórico');
           }
         } catch (error) {
           console.error('[SupportPage] Erro ao carregar histórico:', error);
