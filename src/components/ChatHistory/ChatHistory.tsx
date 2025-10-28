@@ -11,6 +11,7 @@ import { ptBR } from 'date-fns/locale';
 interface ChatHistoryProps {
   conversationId: string;
   currentUserId: string;
+  showTimestamps?: boolean;
 }
 
 const emptyMessages: Message[] = [];
@@ -26,7 +27,7 @@ const formatDateSeparator = (timestamp: number) => {
   return format(date, "d 'de' MMMM 'de' yyyy", { locale: ptBR });
 };
 
-const ChatHistory: React.FC<ChatHistoryProps> = ({ conversationId, currentUserId }) => {
+const ChatHistory: React.FC<ChatHistoryProps> = ({ conversationId, currentUserId, showTimestamps=true }) => {
   const messages = useChatStore(
     (state) => state.conversations[conversationId]?.messages || emptyMessages
   );
@@ -78,7 +79,7 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({ conversationId, currentUserId
                 {showDateSeparator && (
                   <DateSeparator date={formatDateSeparator(msg.timestamp)} />
                 )}
-                <ChatMessage message={messageWithLayout} />
+                <ChatMessage message={messageWithLayout} showTimestamp={showTimestamps} />
               </React.Fragment>
             );
           })}
