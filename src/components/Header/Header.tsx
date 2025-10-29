@@ -11,7 +11,7 @@ interface HeaderProps {
   clearChat?: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ conversationId, clearChat = () => {} }) => {
+const Header: React.FC<HeaderProps> = ({ conversationId, clearChat = null }) => {
   const navigate = useNavigate();
   const conversation = useChatStore((state) => state.conversations[conversationId]);
   const empresas = useChatStore((state) => state.empresas);
@@ -39,8 +39,14 @@ const Header: React.FC<HeaderProps> = ({ conversationId, clearChat = () => {} })
   }
 
   const handleClearChat = () => {
+    console.log("[Header] Solicitado limpeza do chat para:", displayName);
+    if (clearChat === null) {
+      console.warn("[Header] Não implementado limpar o chat.");
+      return;
+    }
+
     if (window.confirm(`Apagar o histórico de conversa com "${displayName}"?`)) {
-      clearChat();
+        clearChat();
     }
   };
 
