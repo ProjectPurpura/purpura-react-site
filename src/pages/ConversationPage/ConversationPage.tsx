@@ -5,7 +5,7 @@ import Header from '../../components/Header/Header';
 import ChatHistory from '../../components/ChatHistory/ChatHistory';
 import ChatInput from '../../components/ChatInput/ChatInput';
 import { useStompChat } from '../../hooks/useStompChat';
-import { fetchMessagesForChat, fetchConversationById, fetchEmpresaById } from '../../services/chatApi';
+import { fetchMessagesForChat, fetchConversationById, fetchEmpresaById } from '../../services/mongodbApi';
 import { useChatStore } from '../../store/chatStore';
 import { getSessionUser } from '../../auth/authState';
 
