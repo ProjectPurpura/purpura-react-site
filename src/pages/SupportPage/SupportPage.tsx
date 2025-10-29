@@ -4,55 +4,10 @@ import Header from '../../components/Header/Header';
 import ChatHistory from '../../components/ChatHistory/ChatHistory';
 import ChatInput from '../../components/ChatInput/ChatInput';
 import { useChatStore } from '../../store/chatStore';
+import { fetchChatHistory, sendMessageToChatbot } from '../../services/chatbotApi';
 import { getSessionUser } from '../../auth/authState';
-import { fetchChatHistory } from '../../services/chatApi';
 import './SupportPage.css';
 
-const sendMessageToGemini = async (text: string): Promise<string> => {
-  const chatbotApiBase = process.env.REACT_APP_CHATBOT_URL ?? '';
-  const session = getSessionUser() as Record<string, any> | undefined;
-  const chatId = typeof session?.cnpj === 'string' ? session.cnpj : '';
-  const senderId = chatId;
-
-  const controller = new AbortController();
-  const timeoutMs = 10000;
-  const timeoutId = setTimeout(() => {
-    console.error('[Chatbot] Timeout atingido (' + timeoutMs + 'ms)');
-    controller.abort();
-  }, timeoutMs);
-
-  try {
-    const res = await fetch(`${chatbotApiBase}/chat/${chatId}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ senderId, content: text }),
-      signal: controller.signal,
-    });
-
-    clearTimeout(timeoutId);
-    console.log('[Chatbot] Status da resposta:', res.status);
-
-    if (!res.ok) {
-      const errText = await res.text();
-      console.error('[Chatbot] Erro HTTP:', res.status, errText);
-      throw new Error('Erro ao enviar mensagem para o chatbot');
-    }
-
-    const resposta = await res.json();
-    console.log('[Chatbot] Resposta recebida:', resposta);
-
-    return resposta.content ?? 'Sem resposta da IA.';
-  } catch (error: unknown) {
-    clearTimeout(timeoutId);
-    if (error instanceof DOMException && error.name === 'AbortError') {
-      console.error('[Chatbot] Timeout de comunicação atingido!');
-      throw new Error('Tempo de resposta excedido.');
-    } else {
-      console.error('[Chatbot] Erro desconhecido:', error);
-      throw error;
-    }
-  }
-};
 
 const SupportPage: React.FC = () => {
   const supportConversationId = 'suporte';
@@ -118,7 +73,7 @@ const SupportPage: React.FC = () => {
     try {
       setTyping(supportConversationId, 'PurpurIA', true);
 
-      const aiResponseText = await sendMessageToGemini(text);
+      const aiResponseText = await sendMessageToChatbot(text);
       
       setTyping(supportConversationId, 'PurpurIA', false);
       
