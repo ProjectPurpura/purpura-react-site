@@ -1,12 +1,13 @@
 import { Message } from "../store/chatStore";
 import { getSessionUser } from "../auth/authState";
+import { getChatSession } from "../store/chatSession";
 
 
 export const sendMessageToChatbot = async (text: string): Promise<string> => {
   const chatbotApiBase = process.env.REACT_APP_CHATBOT_URL ?? '';
   const session = getSessionUser() as Record<string, any> | undefined;
-  const chatId = typeof session?.cnpj === 'string' ? session.cnpj : '';
-  const senderId = chatId;
+  const senderId = typeof session?.cnpj === 'string' ? session.cnpj : '';
+  const chatId = getChatSession();
 
   const controller = new AbortController();
   const timeoutMs = 10000;
