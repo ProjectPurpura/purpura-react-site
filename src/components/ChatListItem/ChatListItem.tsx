@@ -41,11 +41,6 @@ const ChatListItem: React.FC<ChatListItemProps> = ({ conversation }) => {
           </p>
         )}
       </div>
-      {conversation.unreadCount && conversation.unreadCount > 0 && (
-        <div className="unread-badge" aria-label={`${conversation.unreadCount} não lidas`}>
-          {conversation.unreadCount}
-        </div>
-      )}
     </Link>
   );
 };
