@@ -80,63 +80,57 @@ const AreaRestrita: React.FC = () => {
           </div>
         )}
       </header>
-      <main className="area-restrita-main">
         {!user ? (
-          <div className="auth-container">
-            <h2 className="auth-title">Entrar</h2>
-            <form onSubmit={handleLogin} className="auth-form">
-              <div className="form-group">
-                <label htmlFor="email-input" className="form-label">Email</label>
-                <input
-                  type="email"
-                  id="email-input"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="seu@email.com"
-                  className="form-input"
-                  required
-                  disabled={isLoading}
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="password-input" className="form-label">Senha</label>
-                <input
-                  type="password"
-                  id="password-input"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="******"
-                  className="form-input"
-                  required
-                  minLength={6}
-                  disabled={isLoading}
-                />
-              </div>
+          <main className="area-restrita-main">
+            <div className="auth-container">
+              <h2 className="auth-title">Entrar</h2>
+              <form onSubmit={handleLogin} className="auth-form">
+                <div className="form-group">
+                  <label htmlFor="email-input" className="form-label">Email</label>
+                  <input
+                    type="email"
+                    id="email-input"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="seu@email.com"
+                    className="form-input"
+                    required
+                    disabled={isLoading}
+                  />
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="password-input" className="form-label">Senha</label>
+                  <input
+                    type="password"
+                    id="password-input"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="******"
+                    className="form-input"
+                    required
+                    minLength={6}
+                    disabled={isLoading}
+                  />
+                </div>
 
-              {authError && (
-                <div className="error-message">{authError}</div>
-              )}
+                {authError && (
+                  <div className="error-message">{authError}</div>
+                )}
 
-              <button 
-                type="submit" 
-                className="auth-btn"
-                disabled={isLoading}
-              >
-                {isLoading ? 'Processando...' : 'Entrar'}
-              </button>
-            </form>
-          </div>
+                <button 
+                  type="submit" 
+                  className="auth-btn"
+                  disabled={isLoading}
+                >
+                  {isLoading ? 'Processando...' : 'Entrar'}
+                </button>
+              </form>
+            </div>
+          </main>
         ) : (
-          <iframe
-            src="https://app.powerbi.com/view?r=eyJrIjoiYjIxY2ZmZDEtN2Y3ZS00YzFjLWE3NGYtMGQ1MmZhNTUyMDUzIiwidCI6ImIxNDhmMTRjLTIzOTctNDAyYy1hYjZhLTFiNDcxMTE3N2FjMCJ9"
-            title="Dashboard BI PurPura"
-            className="area-restrita-iframe"
-            frameBorder="0"
-            allowFullScreen
-          />
+          <iframe title="Bi_Inter" width="600" height="373.5" src="https://app.powerbi.com/view?r=eyJrIjoiODQ2M2FkZTAtYTY1OS00M2ViLWJjMjYtYjU1OTczNGI1MzA0IiwidCI6ImIxNDhmMTRjLTIzOTctNDAyYy1hYjZhLTFiNDcxMTE3N2FjMCJ9&pageName=7c1337f4ac57e589d0e4" allowFullScreen={true}></iframe>
         )}
-      </main>
     </div>
   );
 };
