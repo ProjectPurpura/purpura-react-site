@@ -343,6 +343,7 @@ ComponentName/
 - **API não responde**: Verifique `REACT_APP_API_URL`
 - **Rotas não funcionam**: Confirme `static.json` no deploy
 
-## 👨‍💻 Autor
+## 👨‍💻 Autores
 
-**Emilio Stuart** - [@EmilioStuart](https://github.com/EmilioStuart)
+- **Emilio Stuart** - [@EmilioStuart](https://github.com/EmilioStuart)
+- **Felipe Fernandes** - [@EmilioStuart](https://github.com/rkhue)
