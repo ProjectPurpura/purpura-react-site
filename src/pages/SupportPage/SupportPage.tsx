@@ -7,6 +7,7 @@ import { useChatStore } from '../../store/chatStore';
 import { fetchChatHistory, sendMessageToChatbot } from '../../services/chatbotApi';
 import { getSessionUser } from '../../auth/authState';
 import './SupportPage.css';
+import { clearChatSession } from '../../store/chatSession';
 
 
 const SupportPage: React.FC = () => {
@@ -26,7 +27,7 @@ const SupportPage: React.FC = () => {
       
       addOrUpdateConversation({
         chatId: supportConversationId,
-        participants: [currentUserId, 'PurpurIA'],
+        participants: [currentUserId, 'PurPurIA'],
         messages: [],
         lastMessagePreview: '',
         lastUpdated: Date.now(),
@@ -65,21 +66,27 @@ const SupportPage: React.FC = () => {
     const supportConvo = conversations[supportConversationId];
   }, [conversations, supportConversationId]);
 
+  const afterClearChatConfirmation = () => {
+    console.log("[SupportPage] Limpando histórico de chat após confirmação");
+    setMessagesForConversation(supportConversationId, []);
+    clearChatSession();
+  };
+
   const handleAiSendMessage = async (text: string) => {
     if (!currentUserId) {
       return;
     }
 
     try {
-      setTyping(supportConversationId, 'PurpurIA', true);
+      setTyping(supportConversationId, 'PurPurIA', true);
 
       const aiResponseText = await sendMessageToChatbot(text);
       
-      setTyping(supportConversationId, 'PurpurIA', false);
+      setTyping(supportConversationId, 'PurPurIA', false);
       
       const aiMsg = {
         messageId: `ai-${Date.now()}`,
-        senderId: 'PurpurIA',
+        senderId: 'PurPurIA',
         corpo: aiResponseText,
         timestamp: Date.now(),
         read: false,
@@ -90,11 +97,11 @@ const SupportPage: React.FC = () => {
     } catch (error) {
       console.error('[SupportPage] Erro enviando mensagem para IA:', error);
       
-      setTyping(supportConversationId, 'PurpurIA', false);
+      setTyping(supportConversationId, 'PurPurIA', false);
       
       const errorMsg = {
         messageId: `error-${Date.now()}`,
-        senderId: 'PurpurIA',
+        senderId: 'PurPurIA',
         corpo: 'Desculpe, ocorreu um erro ao processar sua mensagem. Por favor, tente novamente.',
         timestamp: Date.now(),
         read: false,
@@ -106,7 +113,7 @@ const SupportPage: React.FC = () => {
 
   return (
     <div className="support-page-container">
-      <Header conversationId={supportConversationId} />
+      <Header conversationId={supportConversationId} clearChat={afterClearChatConfirmation} />
       <ChatHistory conversationId={supportConversationId} currentUserId={currentUserId} showTimestamps={false} />
       <ChatInput
         conversationId={supportConversationId}
