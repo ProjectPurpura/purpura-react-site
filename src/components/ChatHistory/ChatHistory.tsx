@@ -33,7 +33,7 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({ conversationId, currentUserId
   );
 
   const isAiTyping = useChatStore(
-    (state) => state.getIsTyping(conversationId, 'PurpurIA')
+    (state) => state.getIsTyping(conversationId, 'PurPurIA')
   );
 
   const sortedMessages = [...messages].sort((a, b) => a.timestamp - b.timestamp);

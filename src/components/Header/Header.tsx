@@ -8,15 +8,16 @@ import './Header.css';
 
 interface HeaderProps {
   conversationId: string;
+  clearChat?: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ conversationId }) => {
+const Header: React.FC<HeaderProps> = ({ conversationId, clearChat = null }) => {
   const navigate = useNavigate();
   const conversation = useChatStore((state) => state.conversations[conversationId]);
   const empresas = useChatStore((state) => state.empresas);
 
   const isSupportChat = conversationId === 'suporte';
-  let displayName = 'Chat';
+  let displayName =  'Chat';
   let imageUrl = process.env.PUBLIC_URL + '/logo.svg';
   let imageAlt = 'Logo PurPura';
 
@@ -24,7 +25,7 @@ const Header: React.FC<HeaderProps> = ({ conversationId }) => {
   const myId = session?.cnpj || session?.userHash || '';
 
   if (isSupportChat) {
-    displayName = 'PurpurIA';
+    displayName = 'PurPurIA';
   } else if (conversation) {
     const otherParticipantId = conversation.participants.find((p) => p !== myId);
     if (otherParticipantId && empresas[otherParticipantId]) {
@@ -38,8 +39,14 @@ const Header: React.FC<HeaderProps> = ({ conversationId }) => {
   }
 
   const handleClearChat = () => {
-    if (window.confirm(`Apagar o histórico de "${displayName}"?`)) {
-      alert('Função de limpar ainda não implementada no store!');
+    console.log("[Header] Solicitado limpeza do chat para:", displayName);
+    if (clearChat === null) {
+      console.warn("[Header] Não implementado limpar o chat.");
+      return;
+    }
+
+    if (window.confirm(`Apagar o histórico de conversa com "${displayName}"?`)) {
+        clearChat();
     }
   };
 

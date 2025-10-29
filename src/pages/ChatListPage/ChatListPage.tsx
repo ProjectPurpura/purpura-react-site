@@ -1,7 +1,7 @@
 // src/pages/ChatListPage/ChatListPage.tsx
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useChatStore, Conversation } from '../../store/chatStore';
-import { fetchConversations, fetchEmpresaById } from '../../services/chatApi';
+import { fetchConversations, fetchEmpresaById } from '../../services/mongodbApi';
 import ChatListItem from '../../components/ChatListItem/ChatListItem';
 import './ChatListPage.css';
 import { getSessionUser } from '../../auth/authState';
