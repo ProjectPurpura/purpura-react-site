@@ -47,7 +47,20 @@ const SupportPage: React.FC = () => {
             setMessagesForConversation(supportConversationId, historyMessages);
             console.log('[SupportPage] Mensagens definidas no estado');
           } else {
-            console.log('[SupportPage] Nenhuma mensagem no histórico');
+            const existingMessages = useChatStore.getState().conversations[supportConversationId]?.messages || [];
+            if (existingMessages.length === 0) {
+              addMessage(supportConversationId, {
+                messageId: `welcome-${Date.now()}`,
+                senderId: 'PurPurIA',
+                corpo: 'Olá! Como posso ajudar você hoje?',
+                timestamp: Date.now(),
+                read: false,
+                isUser: false,
+              });
+              console.log('[SupportPage] Nenhuma mensagem no histórico — mensagem de boas-vindas adicionada');
+            } else {
+              console.log('[SupportPage] Nenhuma mensagem no histórico do servidor, mas já existem mensagens locais — pulando welcome');
+            }
           }
         } catch (error) {
           console.error('[SupportPage] Erro ao carregar histórico:', error);
