@@ -10,7 +10,7 @@ export const sendMessageToChatbot = async (text: string): Promise<string> => {
   const chatId = getChatSession();
 
   const controller = new AbortController();
-  const timeoutMs = 10000;
+  const timeoutMs = 30_000; // 30 segundos
   const timeoutId = setTimeout(() => {
     console.error('[Chatbot] Timeout atingido (' + timeoutMs + 'ms)');
     controller.abort();
