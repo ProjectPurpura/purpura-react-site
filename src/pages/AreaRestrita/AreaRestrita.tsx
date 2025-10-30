@@ -80,7 +80,7 @@ const AreaRestrita: React.FC = () => {
           </div>
         )}
       </header>
-        {!user ? (
+        {user ? (
           <main className="area-restrita-main">
             <div className="auth-container">
               <h2 className="auth-title">Entrar</h2>
@@ -129,7 +129,8 @@ const AreaRestrita: React.FC = () => {
             </div>
           </main>
         ) : (
-          <iframe title="Bi_Inter" width="600" height="373.5" src="https://app.powerbi.com/view?r=eyJrIjoiODQ2M2FkZTAtYTY1OS00M2ViLWJjMjYtYjU1OTczNGI1MzA0IiwidCI6ImIxNDhmMTRjLTIzOTctNDAyYy1hYjZhLTFiNDcxMTE3N2FjMCJ9&pageName=7c1337f4ac57e589d0e4" allowFullScreen={true}></iframe>
+
+          <iframe title="Bi_Inter" width="1024" height="1060" src="https://app.powerbi.com/view?r=eyJrIjoiODQ2M2FkZTAtYTY1OS00M2ViLWJjMjYtYjU1OTczNGI1MzA0IiwidCI6ImIxNDhmMTRjLTIzOTctNDAyYy1hYjZhLTFiNDcxMTE3N2FjMCJ9" allowFullScreen={true}></iframe>
         )}
     </div>
   );
