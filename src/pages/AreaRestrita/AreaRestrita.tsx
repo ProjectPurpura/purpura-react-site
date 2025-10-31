@@ -130,7 +130,7 @@ const AreaRestrita: React.FC = () => {
           </main>
         ) : (
 
-          <iframe title="Bi_Inter" width="1024" height="1060" src="https://app.powerbi.com/view?r=eyJrIjoiODQ2M2FkZTAtYTY1OS00M2ViLWJjMjYtYjU1OTczNGI1MzA0IiwidCI6ImIxNDhmMTRjLTIzOTctNDAyYy1hYjZhLTFiNDcxMTE3N2FjMCJ9" allowFullScreen={true}></iframe>
+          <iframe title="Bi_Inter" width="1024" height="1060" src="https://app.powerbi.com/view?r=eyJrIjoiMDA5NjFlZGMtYzZjZS00NzY4LWJlM2MtNDRmZmJlNzA1YjA5IiwidCI6ImIxNDhmMTRjLTIzOTctNDAyYy1hYjZhLTFiNDcxMTE3N2FjMCJ9" allowFullScreen={true}></iframe>
         )}
     </div>
   );
