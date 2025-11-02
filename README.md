@@ -13,7 +13,6 @@ Uma plataforma de comunicação em tempo real para conectar empresas do ecossist
 - **Conversas entre empresas**: trocas diretas e privadas, organizadas por lista de conversas e páginas de chat
 - **Mensagens instantâneas**: envio e recebimento na hora, sem precisar recarregar a página
 - **Indicador de digitação**: mostra as "três bolinhas" enquanto alguém está escrevendo
-- **Contagem de não lidas**: cada conversa exibe quantas mensagens do outro participante ainda não foram lidas
 - **Suporte com IA (PurpurIA)**: canal dedicado para dúvidas e orientação
 - **Mensagens com formatação**: suporte a textos com formatação simples (Markdown) para melhor leitura
 - **Área Restrita**: dashboard com Business Intelligence (BI) integrado
@@ -112,7 +111,6 @@ Cada página representa uma rota da aplicação:
   - Conversas e mensagens
   - Dados das empresas
   - Status de digitação
-  - Contadores de não lidas
 
 ### Serviços (`src/services/`)
 
@@ -228,18 +226,18 @@ WebSocket → useStompChat → chatStore.ts → Componentes
 **Obrigatório:**
 - Node.js 18+ ou Node.js 20 (recomendado)
 - NPM 8+ ou Yarn 1.22+
-- Conta Firebase (para autenticação)
+- Conta Firebase (para autenticação da arearestrita)
 
 ### Instalação
 
 1. **Clonar o projeto**
-```bash
-git clone https://github.com/PurPuraAmbiental/PurPura-react-site.git
-cd PurPura-react-site
+```
+git clone https://github.com/PurPuraAmbiental/purpura-react-site.git
+cd purpura-react-site
 ```
 
 2. **Instalar dependências**
-```bash
+```
 npm install
 # ou
 yarn install
@@ -249,7 +247,7 @@ yarn install
 
 Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
 
-```env
+```
 # API, ChatBot e WebSocket
 REACT_APP_API_URL=https://URL_DA_API
 REACT_APP_WEBSOCKET_URL=wss://URL_DO_WEBSOCKET
@@ -275,7 +273,7 @@ REACT_APP_FIREBASE_MEASUREMENT_ID=seu_measurement_id
 5. Copie as credenciais da configuração do Firebase
 
 4. **Executar em desenvolvimento**
-```bash
+```
 npm start
 # ou
 yarn start
@@ -285,7 +283,7 @@ Acesse: http://localhost:3000
 
 ### Build de Produção
 
-```bash
+```
 npm run build
 ```
 
@@ -296,7 +294,7 @@ Gera os arquivos otimizados na pasta `build/` para deploy.
 O projeto inclui arquivos de configuração para garantir que todas as rotas funcionem corretamente:
 
 **Para Render/servidores Node.js (`static.json`):**
-```json
+```
 {
   "root": "build/",
   "routes": {
@@ -346,4 +344,4 @@ ComponentName/
 ## 👨‍💻 Autores
 
 - **Emilio Stuart** - [@EmilioStuart](https://github.com/EmilioStuart)
-- **Felipe Fernandes** - [@EmilioStuart](https://github.com/rkhue)
+- **Felipe Fernandes** - [@rkhue](https://github.com/rkhue)
