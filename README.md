@@ -156,6 +156,13 @@ O `useHashLoginBootstrap` é responsável por:
 
 ### Fluxos de Acesso
 
+**URL de Teste Autenticação:**
+```bash
+http://localhost3000/#cnpj=17424290000101
+# ou
+https://site-purpura.onrender.com/#cnpj=17424290000101
+```
+
 #### 🔗 Acesso Direto a Chats
 O sistema suporta acesso direto a conversas específicas via URL:
 
@@ -167,6 +174,13 @@ O sistema suporta acesso direto a conversas específicas via URL:
 **Exemplo:**
 ```
 /chat/123456/#cnpj=12345678000199
+```
+
+**URL de Teste Acesso Direto a Chats:**
+```bash
+http://localhost3000/chat/911d3f3e-13cf-42e1-8902-5333481fa4e1/#cnpj=17424290000101
+# ou
+https://site-purpura.onrender.com/chat/911d3f3e-13cf-42e1-8902-5333481fa4e1/#cnpj=17424290000101
 ```
 
 **Fluxo de Execução:**
